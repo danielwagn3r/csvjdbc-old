@@ -211,23 +211,28 @@
               <pluginExecutions>
                 <pluginExecution>
                   <pluginExecutionFilter>
-                    <groupId>
-                                            org.apache.maven.plugins
-                    </groupId>
-                    <artifactId>
-                                            maven-dependency-plugin
-                    </artifactId>
-                    <versionRange>
-                                            [2.7,)
-                    </versionRange>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.7,)</versionRange>
                     <goals>
-                      <goal>
-                                                copy-dependencies
-                      </goal>
+                      <goal>copy-dependencies</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
                     <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>javacc-maven-plugin</artifactId>
+                    <versionRange>[2.6,)</versionRange>
+                    <goals>
+                      <goal>javacc</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -237,7 +242,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
