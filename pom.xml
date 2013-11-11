@@ -163,8 +163,6 @@
         <version>2.6</version>
         <configuration>
           <jdkVersion>${java.version}</jdkVersion>
-          <isStatic>false</isStatic>
-          <lookAhead>3</lookAhead>
         </configuration>
         <executions>
           <execution>
