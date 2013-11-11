@@ -19,10 +19,10 @@
 options
 {
 	STATIC = false;
-	LOOKAHEAD = 2;
+	LOOKAHEAD = 3;
 	FORCE_LA_CHECK = true;
 	IGNORE_CASE = true;
-	JDK_VERSION = "1.5";
+	//JDK_VERSION = "1.5";
 }
 PARSER_BEGIN(ExpressionParser)
 package org.relique.jdbc.csv;
