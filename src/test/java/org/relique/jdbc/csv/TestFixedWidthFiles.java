@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -39,9 +40,9 @@ public class TestFixedWidthFiles
 	private static String filePath;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -60,7 +61,7 @@ public class TestFixedWidthFiles
 
 	@Test
 	public void testFixedWidth() throws SQLException
-	{	
+	{
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("fixedWidths", "1-16,17-24,25-27,35-42,43-50,51-58");
@@ -116,7 +117,7 @@ public class TestFixedWidthFiles
 		assertEquals("YESTERDY rate is wrong", "0.761645", rs1.getString("PREV_DAY"));
 		assertEquals("TODAY_ rate is wrong", "0.763246", rs1.getString("TODAY"));
 		assertEquals("% Change rate is wrong", "0.002102", rs1.getString("PTChange"));
-		
+
 		// HUNGARY         Forint  HUF       226.1222226.67130.002429
 		ResultSet rs2 = stmt
 				.executeQuery("SELECT * FROM currency-exchange-rates-fixed c WHERE c.Country = 'HUNGARY'");
@@ -125,7 +126,7 @@ public class TestFixedWidthFiles
 		assertEquals("YESTERDY rate is wrong", "226.1222", rs2.getString("PREV_DAY"));
 		assertEquals("TODAY_ rate is wrong", "226.6713", rs2.getString("TODAY"));
 		assertEquals("% Change rate is wrong", "0.002429", rs2.getString("PTChange"));
-		
+
 		// PERU            Sol     PEN       2.6618362.661836       0
 		ResultSet rs3 = stmt
 				.executeQuery("SELECT * FROM currency-exchange-rates-fixed c WHERE c.Country = 'PERU'");
@@ -134,7 +135,7 @@ public class TestFixedWidthFiles
 		assertEquals("YESTERDY rate is wrong", "2.661836", rs3.getString("PREV_DAY"));
 		assertEquals("TODAY_ rate is wrong", "2.661836", rs3.getString("TODAY"));
 		assertEquals("% Change rate is wrong", "0.0", rs3.getString("PTChange"));
-		
+
 		//SAUDI ARABIA    Riyal   SAR       3.7504133.750361-1.4E-05
 		ResultSet rs4 = stmt
 				.executeQuery("SELECT * FROM currency-exchange-rates-fixed c WHERE c.Country = 'SAUDI ARABIA'");
@@ -147,7 +148,7 @@ public class TestFixedWidthFiles
 
 	@Test
 	public void testNumericColumns() throws SQLException
-	{	
+	{
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("columnTypes", "String,String,String,Double,Double,Double");
@@ -175,7 +176,7 @@ public class TestFixedWidthFiles
 
 	@Test
 	public void testColumnSizes() throws SQLException
-	{	
+	{
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("columnTypes", "String,String,String,Double,Double,Double");
@@ -195,7 +196,7 @@ public class TestFixedWidthFiles
 
 	@Test
 	public void testWidthOrder() throws SQLException
-	{	
+	{
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("columnTypes", "String,Integer,String");
@@ -210,7 +211,7 @@ public class TestFixedWidthFiles
 		assertEquals("Column 1 is wrong", "A18", rs1.getString(1));
 		assertEquals("Column 2 is wrong", 1, rs1.getInt(2));
 		assertEquals("Column 3 is wrong", "", rs1.getString(3));
-		
+
 		assertTrue(rs1.next());
 		assertEquals("Column 1 is wrong", "B2", rs1.getString(1));
 		assertEquals("Column 2 is wrong", 1, rs1.getInt(2));
@@ -220,7 +221,7 @@ public class TestFixedWidthFiles
 		assertEquals("Column 1 is wrong", "D4", rs1.getString(1));
 		assertEquals("Column 2 is wrong", 2, rs1.getInt(2));
 		assertEquals("Column 3 is wrong", "", rs1.getString(3));
-		
+
 		assertTrue(rs1.next());
 		assertEquals("Column 1 is wrong", "A22", rs1.getString(1));
 		assertEquals("Column 2 is wrong", 1, rs1.getInt(2));

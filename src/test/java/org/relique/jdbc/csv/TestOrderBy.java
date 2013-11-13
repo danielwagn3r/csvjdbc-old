@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -46,9 +47,9 @@ public class TestOrderBy
 	private static DateFormat toUTC;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -63,8 +64,8 @@ public class TestOrderBy
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	@Test
@@ -374,7 +375,7 @@ public class TestOrderBy
 
 	@Test
 	public void testOrderByWithBadColumnName() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -393,7 +394,7 @@ public class TestOrderBy
 
 	@Test
 	public void testOrderByWithBadColumnNumber() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -412,7 +413,7 @@ public class TestOrderBy
 
 	@Test
 	public void testOrderByWithFloatColumnNumber() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -431,7 +432,7 @@ public class TestOrderBy
 
 	@Test
 	public void testOrderByWithBadValue() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();

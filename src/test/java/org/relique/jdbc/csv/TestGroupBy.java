@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -47,9 +48,9 @@ public class TestGroupBy
 	private static DateFormat toUTC;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -64,8 +65,8 @@ public class TestGroupBy
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	@Test
@@ -371,7 +372,7 @@ public class TestGroupBy
 
 	@Test
 	public void testGroupByWithBadColumnName() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -390,7 +391,7 @@ public class TestGroupBy
 
 	@Test
 	public void testSelectUngroupedColumn() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -409,7 +410,7 @@ public class TestGroupBy
 
 	@Test
 	public void testOrderByUngroupedColumn() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -488,7 +489,7 @@ public class TestGroupBy
 
 	@Test
 	public void testHavingWithBadColumnName() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -507,7 +508,7 @@ public class TestGroupBy
 
 	@Test
 	public void testHavingUngroupedColumn() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -523,7 +524,7 @@ public class TestGroupBy
 			assertEquals("java.sql.SQLException: Invalid HAVING column: NAME", "" + e);
 		}
 	}
-	
+
 	@Test
 	public void testGroupByCountDistinct() throws SQLException
 	{
@@ -553,7 +554,7 @@ public class TestGroupBy
 		stmt.close();
 		conn.close();
 	}
-	
+
 	@Test
 	public void testGroupBySumAvgDistinct() throws SQLException
 	{

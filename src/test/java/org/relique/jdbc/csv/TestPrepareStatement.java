@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -36,7 +37,7 @@ import org.junit.Test;
 
 /**
  * This class is used to test the CsvJdbc driver.
- * 
+ *
  * @author Mario Frasca
  */
 public class TestPrepareStatement
@@ -44,9 +45,9 @@ public class TestPrepareStatement
 	private static String filePath;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -122,7 +123,7 @@ public class TestPrepareStatement
 		assertEquals("Column EXTRA_FIELD is wrong", "A", results.getString("EXTRA_FIELD"));
 		conn.close();
 		assertTrue(prepstmt.isClosed());
-		
+
 	}
 
 	@Test
@@ -258,7 +259,7 @@ public class TestPrepareStatement
 
 		prepstmt.setString(1, "Project Manager");
 		ResultSet results = prepstmt.executeQuery();
-		
+
 		assertTrue(results.next());
 		assertEquals("Integer column ID is wrong", new Integer(1), results.getObject("id"));
 		assertTrue(results.next());
@@ -266,10 +267,10 @@ public class TestPrepareStatement
 		assertTrue(results.next());
 		assertEquals("Integer column ID is wrong", new Integer(4), results.getObject("id"));
 		assertFalse(results.next());
-		
+
 		prepstmt.setString(1, "Office Employee");
 		results = prepstmt.executeQuery();
-		
+
 		assertTrue(results.next());
 		assertEquals("Integer column ID is wrong", new Integer(6), results.getObject("id"));
 		assertTrue(results.next());

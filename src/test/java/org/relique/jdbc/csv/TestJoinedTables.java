@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,9 +23,9 @@ public class TestJoinedTables
 	private static String filePath;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -50,10 +51,10 @@ public class TestJoinedTables
 
 		// setting both transposedLines and skipTransposedFields informs the
 		// driver we are receiving a compacted join
-		
-		// L,P,K,U,W, leaving D,T as regular fields, V as matrix of joined values 
-		props.put("transposedLines", "5"); 
-		
+
+		// L,P,K,U,W, leaving D,T as regular fields, V as matrix of joined values
+		props.put("transposedLines", "5");
+
 		// the first column in the transposed table holds the (ignored) header.
 		props.put("transposedFieldsToSkip", "1");
 		// the driver must be told that there is no header.
@@ -225,14 +226,14 @@ public class TestJoinedTables
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("headerline", "P,D,T,V");
-		
+
 		// setting both transposedLines and skipTransposedFields informs the
 		// driver we are receiving a compacted join
-		
+
 		// transposedLines <- 1; leaving D,T as regular fields, V as matrix of
 		// joined values
 		props.put("transposedLines", "1");
-		
+
 		// transposedFieldsToSkip <- 2; the file looks like a regular CSV (with
 		// variable header)
 		props.put("transposedFieldsToSkip", "2");
@@ -345,20 +346,20 @@ public class TestJoinedTables
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("headerline", "P,J,D,T,V");
-		
+
 		// setting both transposedLines and skipTransposedFields informs the
 		// driver we are receiving a compacted join
-		
+
 		// transposedLines <- 1; leaving D,T as regular fields, V as matrix of
 		// joined values
 		props.put("transposedLines", "1");
-		
+
 		// transposedFieldsToSkip <- 2; the file looks like a regular CSV (with
 		// variable header)
 		props.put("transposedFieldsToSkip", "3");
 		// the driver must be told that there is no header.
 		props.put("suppressHeaders", "true");
-		
+
 		props.put("indexedFiles", "True");
 		props.put("fileTailPattern", "_(.*)");
 		props.put("fileTailParts", "junk");
@@ -507,20 +508,20 @@ public class TestJoinedTables
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("headerline", "P,J,D,T,V");
-		
+
 		// setting both transposedLines and skipTransposedFields informs the
 		// driver we are receiving a compacted join
-		
+
 		// transposedLines <- 1; leaving D,T as regular fields, V as matrix of
 		// joined values
 		props.put("transposedLines", "1");
-		
+
 		// transposedFieldsToSkip <- 2; the file looks like a regular CSV (with
 		// variable header)
 		props.put("transposedFieldsToSkip", "3");
 		// the driver must be told that there is no header.
 		props.put("suppressHeaders", "true");
-		
+
 		props.put("indexedFiles", "True");
 		props.put("fileTailPattern", "_(.*)");
 		props.put("fileTailParts", "junk");

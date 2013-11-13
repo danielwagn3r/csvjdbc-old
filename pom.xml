@@ -56,7 +56,7 @@
   </developers>
 
   <properties>
-    <sample.files.location>${basedir}\src\test\resources\testdata</sample.files.location>
+    <sample.files.location>${basedir}/src/test/resources/testdata</sample.files.location>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.6</java.version>

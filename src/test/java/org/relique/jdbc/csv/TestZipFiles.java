@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -48,9 +49,9 @@ public class TestZipFiles
 	private static String TEST_ZIP_FILENAME_2 = "encodings.zip";
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -65,8 +66,8 @@ public class TestZipFiles
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class TestZipFiles
 		assertEquals("The CODE is wrong", "CHN", results.getString(3));
 		assertEquals("The GOLD is wrong", 32, results.getShort(4));
 	}
-	
+
 	@Test
 	public void testListTables() throws SQLException
 	{

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
@@ -46,7 +47,7 @@ import org.junit.Test;
 
 /**
  * This class is used to test the CsvJdbc driver.
- * 
+ *
  * @author Mario Frasca
  */
 public class TestDbfDriver
@@ -55,9 +56,9 @@ public class TestDbfDriver
 	private static DateFormat toUTC;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -72,13 +73,13 @@ public class TestDbfDriver
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	/**
 	 * This creates several sentences with where and tests they work
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -276,7 +277,7 @@ public class TestDbfDriver
 		assertTrue(results.next());
 		assertEquals("Incorrect column name", "KEY", results.getString(4));
 	}
-	
+
 	@Test
 	public void testGetNumeric() throws SQLException
 	{
@@ -294,10 +295,10 @@ public class TestDbfDriver
 		assertEquals("The NTAXYEAR is wrong", 2011, results.getInt("NTAXYEAR"));
 		assertEquals("The NNOTFCV is wrong", 0, results.getLong("NNOTFCV"));
 		assertEquals("The NASSASSRAT is wrong", 7250, Math.round(results.getFloat("NASSASSRAT") * 1000));
-		assertEquals("The NASSASSRAT is wrong", 7250, Math.round(results.getDouble("NASSASSRAT") * 1000));		
+		assertEquals("The NASSASSRAT is wrong", 7250, Math.round(results.getDouble("NASSASSRAT") * 1000));
 		assertFalse(results.next());
 	}
-	
+
 	@Test
 	public void testGetDate() throws SQLException
 	{
@@ -312,7 +313,7 @@ public class TestDbfDriver
 		assertTrue(results.next());
 		assertEquals("The DASSDATE is wrong", Date.valueOf("2012-12-25"), results.getDate(1));
 	}
-	
+
 	@Test
 	public void testGetTimestamp() throws SQLException
 	{
@@ -328,7 +329,7 @@ public class TestDbfDriver
 		assertEquals("The DASSDATE is wrong", Timestamp.valueOf("2012-12-25 00:00:00"),
 			results.getTimestamp(1));
 	}
-	
+
 	@Test
 	public void testCharset() throws SQLException
 	{

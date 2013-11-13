@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -38,9 +39,9 @@ public class TestDoubleQuoting
 	private static String filePath;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -50,7 +51,7 @@ public class TestDoubleQuoting
 		try
 		{
 			Class.forName("org.relique.jdbc.csv.CsvDriver");
-		} 
+		}
 		catch (ClassNotFoundException e)
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
@@ -72,7 +73,7 @@ public class TestDoubleQuoting
 		rs1.close();
 		stmt.close();
 	}
-	
+
 	@Test
 	public void testQuotedColumnNames() throws SQLException
 	{
@@ -103,7 +104,7 @@ public class TestDoubleQuoting
 		rs1.close();
 		stmt.close();
 	}
-	
+
 	@Test
 	public void testQuotedTableAlias() throws SQLException
 	{

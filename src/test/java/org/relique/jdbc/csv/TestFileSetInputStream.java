@@ -20,9 +20,9 @@ public class TestFileSetInputStream
 	private static String filePath;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -147,7 +147,7 @@ public class TestFileSetInputStream
 		assertTrue("refSet contains testSet", refSet.containsAll(testSet));
 		assertTrue("testSet contains refSet", testSet.containsAll(refSet));
 	}
-	
+
 	@Test
 	public void testFileSetInputStreamClose() throws IOException
 	{

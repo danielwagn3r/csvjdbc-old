@@ -57,7 +57,7 @@ import org.relique.jdbc.csv.CsvResultSet;
 
 /**
  * This class is used to test the CsvJdbc driver.
- * 
+ *
  * @author Jonathan Ackerman
  * @author JD Evora
  * @author Chetan Gupta
@@ -69,12 +69,13 @@ public class TestCsvDriver
 	private static DateFormat toUTC;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
-		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
+		//filePath = ".." + File.separator + "src" + File.separator + "testdata"
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
+
 		assertTrue("Sample files directory not found: " + filePath, new File(filePath).isDirectory());
 
 		// load CSV driver
@@ -86,8 +87,8 @@ public class TestCsvDriver
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	@Test
@@ -155,7 +156,7 @@ public class TestCsvDriver
 
 	/**
 	 * This creates several sentences with where and tests they work
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -185,7 +186,7 @@ public class TestCsvDriver
 
 	/**
 	 * fields in different order than in source file.
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -803,7 +804,7 @@ public class TestCsvDriver
 
 	@Test
 	public void testBadColumnTypesFails() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -824,7 +825,7 @@ public class TestCsvDriver
 
 	@Test
 	public void testBadColumnNameFails() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -844,7 +845,7 @@ public class TestCsvDriver
 
 	@Test
 	public void testEmptyColumnTypesFails() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -1173,7 +1174,7 @@ public class TestCsvDriver
 
 	/**
 	 * This returns no results with where and tests if this still works
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -1381,7 +1382,7 @@ public class TestCsvDriver
 
 	@Test
 	public void testWhereWithBadColumnName() throws SQLException
-	{		
+	{
 		try
 		{
 			Properties props = new Properties();
@@ -1728,7 +1729,7 @@ public class TestCsvDriver
 	/**
 	 * accessing indexed files that do not exist is the same as accessing an
 	 * empty table. no "file not found" error
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -2141,7 +2142,7 @@ public class TestCsvDriver
 		}
 		catch (SQLException e)
 		{
-			assertTrue(e.getMessage().startsWith("Syntax Error"));	
+			assertTrue(e.getMessage().startsWith("Syntax Error"));
 		}
 	}
 
@@ -2165,7 +2166,7 @@ public class TestCsvDriver
 		results = stmt.executeQuery("select ID from sample5 where lower(job) = lower('FINANCE MANAGER')");
 		assertTrue(results.next());
 		assertEquals("The ID is wrong", 2, results.getInt(1));
-		assertFalse(results.next());		
+		assertFalse(results.next());
 	}
 
 	@Test
@@ -2190,7 +2191,7 @@ public class TestCsvDriver
 		results = stmt.executeQuery("select BLZ from banks where UPPER(BANK_NAME) = 'POSTBANK (BERLIN)'");
 		assertTrue(results.next());
 		assertEquals("The BLZ is wrong", 10010010, results.getInt(1));
-		assertFalse(results.next());		
+		assertFalse(results.next());
 	}
 
 	@Test
@@ -2208,7 +2209,7 @@ public class TestCsvDriver
 		assertEquals("The Length is wrong", 27, results.getInt(1));
 		assertEquals("The Length is wrong", 15, results.getInt(2));
 		assertEquals("The Length is wrong", 0, results.getInt(3));
-		assertFalse(results.next());		
+		assertFalse(results.next());
 	}
 
 	@Test
@@ -2565,7 +2566,7 @@ public class TestCsvDriver
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 		Statement stmt = conn.createStatement();
-		
+
 		StringWriter sw = new StringWriter();
 		PrintWriter logger = new PrintWriter(sw, true);
 		DriverManager.setLogWriter(logger);
@@ -2573,7 +2574,7 @@ public class TestCsvDriver
 		ResultSet results = stmt.executeQuery("SELECT * FROM with_leading_trash");
 		while (results.next())
 		{
-			
+
 		}
 		String logMessages = sw.getBuffer().toString();
 
@@ -2775,7 +2776,7 @@ public class TestCsvDriver
 
 	/**
 	 * This creates several sentences with where and tests they work
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -2967,7 +2968,7 @@ public class TestCsvDriver
 		try
 		{
 			conn.createStatement();
-			fail("expected exception java.sql.SQLException");			
+			fail("expected exception java.sql.SQLException");
 		}
 		catch (SQLException e)
 		{
@@ -2994,7 +2995,7 @@ public class TestCsvDriver
 		try
 		{
 			stmt.executeQuery("SELECT * FROM sample");
-			fail("expected exception java.sql.SQLException");			
+			fail("expected exception java.sql.SQLException");
 		}
 		catch (SQLException e)
 		{
@@ -3019,23 +3020,23 @@ public class TestCsvDriver
 		assertEquals("Column Count", 2, metadata.getColumnCount());
 		assertEquals("Column Name 1", "key", metadata.getColumnName(1));
 		assertEquals("Column Name 2", "value", metadata.getColumnName(2));
-		
+
 		assertTrue(results.next());
 		assertEquals("Row 1 key", "orange", results.getString(1));
 		assertEquals("Row 1 value", "fruit", results.getString(2));
-		
+
 		assertTrue(results.next());
 		assertEquals("Row 2 key", "apple", results.getString(1));
 		assertEquals("Row 2 value", "fruit", results.getString(2));
-		
+
 		assertTrue(results.next());
 		assertEquals("Row 3 key", "corn", results.getString(1));
 		assertEquals("Row 3 value", "vegetable", results.getString(2));
-		
+
 		assertTrue(results.next());
 		assertEquals("Row 4 key", "lemon", results.getString(1));
 		assertEquals("Row 4 value", "fruit", results.getString(2));
-		
+
 		assertTrue(results.next());
 		assertEquals("Row 5 key", "tomato", results.getString(1));
 		assertEquals("Row 5 value", "who knows?", results.getString(2));
@@ -3049,7 +3050,7 @@ public class TestCsvDriver
 
 	/**
 	 * you can access columns that do not have a name by number
-	 * 
+	 *
 	 * @throws SQLException
 	 * @throws ParseException
 	 */
@@ -3059,7 +3060,7 @@ public class TestCsvDriver
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		//props.put("defectiveHeaders", "True");
-		
+
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 		Statement stmt = conn.createStatement();
@@ -3098,7 +3099,7 @@ public class TestCsvDriver
 		Properties props = new Properties();
 		props.put("fileExtension", ".txt");
 		props.put("defectiveHeaders", "True");
-		
+
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 		Statement stmt = conn.createStatement();
@@ -3128,7 +3129,7 @@ public class TestCsvDriver
 	{
 		Properties props = new Properties();
 		props.put("defectiveHeaders", "True");
-		
+
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 		Statement stmt = conn.createStatement();
@@ -3158,7 +3159,7 @@ public class TestCsvDriver
 		props.put("columnTypes", "Timestamp,Double");
 		props.put("defectiveHeaders", "True");
 		props.put("skipLeadingDataLines", "1");
-		
+
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 		Statement stmt = conn.createStatement();
@@ -3652,7 +3653,7 @@ public class TestCsvDriver
 		assertFalse(stmt.getMoreResults());
 		assertEquals("Update count wrong", -1, stmt.getUpdateCount());
 
-		ResultSet results1 = stmt.executeQuery("SELECT * FROM sample5");		
+		ResultSet results1 = stmt.executeQuery("SELECT * FROM sample5");
 		ResultSet results2 = stmt.getResultSet();
 		assertEquals("Result sets not equal", results1, results2);
 		assertEquals("Update count wrong", -1, stmt.getUpdateCount());
@@ -3711,7 +3712,7 @@ public class TestCsvDriver
 	public void testHeaderlineWithMultipleTables() throws SQLException
 	{
 		Properties props = new Properties();
-		// Define different headerline values for table banks and table transactions. 
+		// Define different headerline values for table banks and table transactions.
 		props.put("headerline.banks", "BLZ,BANK_NAME");
 		props.put("headerline.transactions", "TRANS_DATE,FROM_ACCT,FROM_BLZ,TO_ACCT,TO_BLZ,AMOUNT");
 		props.put("suppressHeaders", "true");
@@ -3844,9 +3845,9 @@ public class TestCsvDriver
 
 	@Test
 	public void testPropertiesInURL() throws SQLException
-	{		
+	{
 		Properties props = new Properties();
-		
+
 		/*
 		 * Use same directory name logic as in CsvDriver.connect.
 		 */
@@ -4053,7 +4054,7 @@ public class TestCsvDriver
 		stmt.close();
 		conn.close();
 	}
-	
+
 	@Test
 	public void testNoCurrentRow() throws SQLException
 	{
@@ -4073,7 +4074,7 @@ public class TestCsvDriver
 		{
 			assertEquals("java.sql.SQLException: No current row, perhaps you need to call next", "" + e);
 		}
-		
+
 		// clean up
 		results.close();
 		stmt.close();
@@ -4115,7 +4116,7 @@ public class TestCsvDriver
 		stmt.close();
 		conn.close();
 	}
-	
+
 	@Test
 	public void testBooleanConversion() throws SQLException,
 			ParseException

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -46,9 +47,9 @@ public class TestAggregateFunctions
 	public static DateFormat toUTC;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -63,8 +64,8 @@ public class TestAggregateFunctions
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 	}
 
@@ -436,7 +437,7 @@ public class TestAggregateFunctions
 		stmt.close();
 		conn.close();
 	}
-	
+
 	@Test
 	public void testAvgTwoColumns() throws SQLException
 	{
@@ -475,7 +476,7 @@ public class TestAggregateFunctions
 		stmt.close();
 		conn.close();
 	}
-	
+
 	@Test
 	public void testCountDistinct() throws SQLException
 	{
@@ -499,7 +500,7 @@ public class TestAggregateFunctions
 		stmt.close();
 		conn.close();
 	}
-	
+
 	@Test
 	public void testSumAvgDistinct() throws SQLException
 	{

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -36,7 +37,7 @@ import org.junit.Test;
 
 /**
  * This class is used to test the CsvJdbc Scrollable driver.
- * 
+ *
  * @author Chetan Gupta
  */
 public class TestScrollableDriver
@@ -44,9 +45,9 @@ public class TestScrollableDriver
 	private static String filePath;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -592,7 +593,7 @@ public class TestScrollableDriver
 	/**
 	 * This checks for the scenario when due to where clause no rows are
 	 * returned.
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -659,7 +660,7 @@ public class TestScrollableDriver
 
 	/**
 	 * This checks for the scenario when we have single record
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -701,7 +702,7 @@ public class TestScrollableDriver
 
 	/**
 	 * This tests for the scenario with where clause.
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	@Test

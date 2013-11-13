@@ -46,7 +46,7 @@ import org.relique.io.XORCipher;
 
 /**
  * This class is used to test the CsvJdbc driver.
- * 
+ *
  * @author Jonathan Ackerman
  * @author JD Evora
  * @author Chetan Gupta
@@ -58,9 +58,9 @@ public class TestCryptoFilter
 	private static int testSize = 1100;
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws IOException
 	{
-    filePath = System.getProperty("sample.files.location");
+		filePath = (new File(System.getProperty("sample.files.location")).getCanonicalPath());
 		//filePath = ".." + File.separator + "src" + File.separator + "testdata";
 		if (!new File(filePath).isDirectory())
 			filePath = "src" + File.separator + "testdata";
@@ -122,7 +122,7 @@ public class TestCryptoFilter
 			File file = new File(testFile);
 			assertTrue(file.delete());
 		}
-	}	
+	}
 
 	/**
 	 * using a wrong codec will cause an exception.
@@ -173,7 +173,7 @@ public class TestCryptoFilter
 		assertEquals("The value is wrong", "tre", results.getString("value"));
 		assertTrue(!results.next());
 	}
-	
+
 	/**
 	 * wrong key: behave as if the file was empty.
 	 * @throws SQLException
@@ -192,7 +192,7 @@ public class TestCryptoFilter
 		Statement stmt = conn.createStatement();
 
 		ResultSet results = stmt.executeQuery("SELECT * FROM scrambled");
-		assertFalse(results.next());		
+		assertFalse(results.next());
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class TestCryptoFilter
 				e.printStackTrace();
 			}
 		}
-		
+
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 
@@ -294,7 +294,7 @@ public class TestCryptoFilter
 		// dependent, this test will cause random regressions just because the
 		// load on the server performing the test might happen to be heavier
 		// during one function and lighter during the other!
-		
+
 		// creating variables - to be initialized later.
 		Properties props = null;
 		Connection conn = null;
@@ -340,7 +340,7 @@ public class TestCryptoFilter
 				noEncryptCount++;
 			conn.close();
 			long noEncryptEndMillis = System.currentTimeMillis();
-			
+
 			timeNoEncrypt += noEncryptEndMillis - noEncryptStartMillis;
 		}
 
