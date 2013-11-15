@@ -64,10 +64,6 @@
   </properties>
 
   <build>
-    <!--
-    <sourceDirectory>src/java/org</sourceDirectory>
-    <testSourceDirectory>src/java/test</testSourceDirectory>
--->
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
