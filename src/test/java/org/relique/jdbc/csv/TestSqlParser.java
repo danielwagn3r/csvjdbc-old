@@ -1,20 +1,20 @@
-/*
-CsvJdbc - a JDBC driver for CSV files
-Copyright (C) 2001  Jonathan Ackerman
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+/**
+ *  CsvJdbc - a JDBC driver for CSV files
+ *  Copyright (C) 2001  Jonathan Ackerman
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package org.relique.jdbc.csv;
 
@@ -41,7 +41,7 @@ import org.relique.jdbc.csv.StringConverter;
 
 /**
  * This class is used to test the SqlParser class.
- * 
+ *
  * @author Jonathan Ackerman
  */
 public class TestSqlParser
@@ -298,11 +298,11 @@ public class TestSqlParser
 		parser.parse("SELECT * FROM test WHERE B = (20)");
 		whereClause = parser.getWhereClause();
 		assertEquals("Incorrect WHERE", "= [B] 20", whereClause.toString());
-		
+
 		parser.parse("SELECT * FROM test WHERE B = 20 + 30");
 		whereClause = parser.getWhereClause();
 		assertEquals("Incorrect WHERE", "= [B] + 20 30", whereClause.toString());
-		
+
 		parser.parse("SELECT * FROM test WHERE B + 20 = 30");
 		whereClause = parser.getWhereClause();
 		assertEquals("Incorrect WHERE", "= + [B] 20 30", whereClause.toString());
@@ -548,7 +548,7 @@ public class TestSqlParser
 		assertEquals((Object)(new Integer("5")), cs.eval(env));
 		env.put("B", new Double(1));
 		assertEquals((Object)(new Double("5")), cs.eval(env));
-		
+
 		cs = new ExpressionParser(new StringReader("a/b AS result"));
 		cs.parseQueryEnvEntry();
 		env.put("B", new Integer(2));
@@ -569,14 +569,14 @@ public class TestSqlParser
 		assertEquals(o.toString(), "2");
 
 		cs = new ExpressionParser(new StringReader("A+B AS result"));
-		cs.parseQueryEnvEntry();		
+		cs.parseQueryEnvEntry();
 		env.put("A", new Short("3"));
 		env.put("B", new Short("4"));
 		o = cs.eval(env);
 		assertEquals(o.toString(), "7");
-		
+
 		cs = new ExpressionParser(new StringReader("A/2 AS result"));
-		cs.parseQueryEnvEntry();		
+		cs.parseQueryEnvEntry();
 		env.put("A", new Short("25"));
 		o = cs.eval(env);
 		assertEquals(o.toString(), "12");
@@ -594,25 +594,25 @@ public class TestSqlParser
 		assertEquals(o.toString(), "5678678679");
 
 		cs = new ExpressionParser(new StringReader("A-50000000000 AS result"));
-		cs.parseQueryEnvEntry();		
+		cs.parseQueryEnvEntry();
 		env.put("A", new Long("120000000000"));
 		o = cs.eval(env);
 		assertEquals(o.toString(), "70000000000");
 
 		cs = new ExpressionParser(new StringReader("A*5000000000 AS result"));
-		cs.parseQueryEnvEntry();		
+		cs.parseQueryEnvEntry();
 		env.put("A", new Integer("3"));
 		o = cs.eval(env);
 		assertEquals(o.toString(), "15000000000");
 
 		cs = new ExpressionParser(new StringReader("A*10000L AS result"));
-		cs.parseQueryEnvEntry();		
+		cs.parseQueryEnvEntry();
 		env.put("A", new Integer("1000000"));
 		o = cs.eval(env);
 		assertEquals(o.toString(), "10000000000");
 
 		cs = new ExpressionParser(new StringReader("A/10 AS result"));
-		cs.parseQueryEnvEntry();		
+		cs.parseQueryEnvEntry();
 		env.put("A", new Long("-1234567891230"));
 		o = cs.eval(env);
 		assertEquals(o.toString(), "-123456789123");
@@ -674,7 +674,7 @@ public class TestSqlParser
 		Map<String, Object> env = new HashMap<String, Object>();
 		Time t1 = (Time)cs.eval(env);
 		assertNotNull(t1);
-		// Avoid comparison with current time because it is changing as unit test runs 
+		// Avoid comparison with current time because it is changing as unit test runs
 	}
 
 	@Test
@@ -790,14 +790,14 @@ public class TestSqlParser
 		assertTrue("Column Name Col 1 '" + cols[1] + "' is not equal TEMP",
 			cols[1].equalsIgnoreCase("TEMP"));
 	}
-	
+
 	@Test
 	public void testParsingMultipleStatements() throws ParseException, SQLException
 	{
 		MultipleSqlParser parser = new MultipleSqlParser();
 		List<SqlParser> parsers = parser.parse("SELECT A FROM test1 ; SELECT B FROM test2 ; SELECT C FROM test3");
 		assertEquals("SQL statement count", 3, parsers.size());
-		
+
 		assertEquals("[A]", parsers.get(0).getExpression(0).toString());
 		assertEquals("Incorrect table name", parsers.get(0).getTableName(), "test1");
 

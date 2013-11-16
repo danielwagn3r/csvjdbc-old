@@ -1,4 +1,4 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2008  Mario Frasca
  *
@@ -34,9 +34,9 @@ import java.util.regex.Pattern;
  * a given pattern are collected, parts of the file name contains part of the
  * data, and the values in the file name are appended (or prepended) to each
  * data line.
- * 
+ *
  * @author Mario Frasca
- * 
+ *
  */
 public class FileSetInputStream extends InputStream
 {
@@ -57,7 +57,7 @@ public class FileSetInputStream extends InputStream
 	private boolean isClosed = false;
 
 	/**
-	 * 
+	 *
 	 * @param dirName
 	 *            the containing directory
 	 * @param fileNamePattern
@@ -70,8 +70,8 @@ public class FileSetInputStream extends InputStream
 	 * @param prepend
 	 *            whether the extra fields should precede the ones from the file
 	 *            content.
-	 * @param headerless 
-	 * @param skipLeadingDataLines 
+	 * @param headerless
+	 * @param skipLeadingDataLines
 	 * @throws IOException
 	 */
 	public FileSetInputStream(String dirName, String fileNamePattern,
@@ -83,7 +83,7 @@ public class FileSetInputStream extends InputStream
 		this.skipLeadingDataLines = skipLeadingDataLines;
 		if (!headerless)
 			this.skipLeadingDataLines++;
-		
+
 		// Initialising tail for header...
 		this.prepend = prepend;
 		this.separator = separator;
@@ -164,14 +164,14 @@ public class FileSetInputStream extends InputStream
 	 * returned as an int in the range 0 to 255. if the end of the current
 	 * source file is reached, the next single file is opened. if all input has
 	 * been used, -1 is returned.
-	 * 
+	 *
 	 * to output the tail, we just glue it before each '\n'
-	 * 
+	 *
 	 * to output the lead, we have to look ahead and append it to all '\n' that
 	 * are not followed by '\n' or -1
-	 * 
+	 *
 	 * @return the next byte of data, or -1 if the end of the stream is reached.
-	 * 
+	 *
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */

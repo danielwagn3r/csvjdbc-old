@@ -1,4 +1,4 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2008  Mario Frasca
  *
@@ -39,7 +39,7 @@ class ParsedExpression extends LogicalExpression
 			useThisEnv.putAll(env);
 			useThisEnv.putAll(placeholders);
 			env = useThisEnv;
-		} 
+		}
 		return ((LogicalExpression)content).isTrue(env);
 	}
 	public Object eval(Map<String, Object> env)
@@ -50,7 +50,7 @@ class ParsedExpression extends LogicalExpression
 			useThisEnv.putAll(env);
 			useThisEnv.putAll(placeholders);
 			env = useThisEnv;
-		} 
+		}
 		return content.eval(env);
 	}
 	public String toString()

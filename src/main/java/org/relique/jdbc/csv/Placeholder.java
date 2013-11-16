@@ -1,4 +1,4 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2008  Mario Frasca
  *
@@ -43,4 +43,4 @@ class Placeholder extends Expression
 	{
 		return new LinkedList<String>();
 	}
-}  
+}

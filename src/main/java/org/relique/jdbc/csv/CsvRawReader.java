@@ -1,18 +1,20 @@
-/*
+/**
  *	CsvJdbc - a JDBC driver for CSV files
  *	Copyright (C) 2001	Jonathan Ackerman
  *
- *	This library is free software; you can redistribute it and/or
- *	modify it under the terms of the GNU Lesser General Public
- *	License as published by the Free Software Foundation; either
- *	version 2.1 of the License, or (at your option) any later version.
- *	This library is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *	Lesser General Public License for more details.
- *	You should have received a copy of the GNU Lesser General Public
- *	License along with this library; if not, write to the Free Software
- *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package org.relique.jdbc.csv;
 
@@ -33,7 +35,7 @@ import org.relique.io.DataReader;
 /**
  * This class is a helper class that handles the reading and parsing of data
  * from a .csv file.
- * 
+ *
  * @author Jonathan Ackerman
  * @author Sander Brienen
  * @author Stuart Mottram (fritto)
@@ -66,9 +68,9 @@ public class CsvRawReader
 
 	/**
 	 * Insert the method's description here.
-	 * 
+	 *
 	 * Creation date: (6-11-2001 15:02:42)
-	 * 
+	 *
 	 * @param fileName
 	 *			  java.lang.String
 	 * @param separator
@@ -78,8 +80,8 @@ public class CsvRawReader
 	 * @param quoteChar
 	 *			  char
 	 * @param filter the decrypting filter
-	 * @param defectiveHeaders 
-	 * @param skipLeadingDataLines 
+	 * @param defectiveHeaders
+	 * @param skipLeadingDataLines
 	 * @exception java.lang.Exception
 	 *				  The exception description.
 	 * @throws SQLException
@@ -91,7 +93,7 @@ public class CsvRawReader
 	public CsvRawReader(LineNumberReader in, String tableAlias, char separator,
 			boolean suppressHeaders, char quoteChar, char commentChar,
 			String headerLine, String extension, boolean trimHeaders, boolean trimValues,
-			int skipLeadingLines, boolean ignoreUnparseableLines, CryptoFilter filter, 
+			int skipLeadingLines, boolean ignoreUnparseableLines, CryptoFilter filter,
 			boolean defectiveHeaders, int skipLeadingDataLines, String quoteStyle,
 			ArrayList<int []> fixedWidthColumns)
 			throws IOException, SQLException
@@ -169,7 +171,7 @@ public class CsvRawReader
 
 	/**
 	 *Description of the Method
-	 * 
+	 *
 	 * @return Description of the Returned Value
 	 * @exception SQLException
 	 *				  Description of Exception
@@ -209,7 +211,7 @@ public class CsvRawReader
 
 	/**
 	 *Description of the Method
-	 * 
+	 *
 	 * @since
 	 */
 	public void close()
@@ -225,7 +227,7 @@ public class CsvRawReader
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The first next data line that contains the correct amount of
 	 *		   columns. An amount of column is considered correct if it matches
 	 *		   columnNames or if no columnNames is given and the amount is more
@@ -269,7 +271,7 @@ public class CsvRawReader
 
 	/**
 	 *Gets the columnNames attribute of the CsvReader object
-	 * 
+	 *
 	 * @return The columnNames value
 	 * @since
 	 */
@@ -305,7 +307,7 @@ public class CsvRawReader
 
 	/**
 	 * Get the value of the column at the specified index, 0 based.
-	 * 
+	 *
 	 * @param columnIndex
 	 *			  Description of Parameter
 	 * @return The column value
@@ -372,7 +374,7 @@ public class CsvRawReader
 	/**
 	 * splits <b>line</b> into the String[] it contains.
 	 * Stuart Mottram added the code for handling line breaks in fields.
-	 * 
+	 *
 	 * @param line the line to parse
 	 * @param trimValues tells whether to remove leading and trailing spaces
 	 * @return
@@ -381,7 +383,7 @@ public class CsvRawReader
 	private String[] parseCsvLine(String line, boolean trimValues)
 			throws SQLException
 	{
-		// TODO: quoteChar should be recognized ONLY when close to separator. 
+		// TODO: quoteChar should be recognized ONLY when close to separator.
 		Vector<String> values = new Vector<String>();
 		boolean inQuotedString = false;
 		int quotedLineNumber = 0;

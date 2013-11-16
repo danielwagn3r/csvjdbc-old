@@ -1,4 +1,4 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2001  Jonathan Ackerman
  *
@@ -6,10 +6,12 @@
  *  modify it under the terms of the GNU Lesser General Public
  *  License as published by the Free Software Foundation; either
  *  version 2.1 of the License, or (at your option) any later version.
+ *
  *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *  Lesser General Public License for more details.
+ *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -216,7 +218,7 @@ public class StringConverter
 
 	/**
 	 * transforms the date string into its equivalent ISO8601
-	 * 
+	 *
 	 * @param date
 	 * @param format
 	 * @return
@@ -481,7 +483,7 @@ public class StringConverter
 
 	/**
 	 * Get a value that has the type of an SQL data type.
-	 * 
+	 *
 	 * @param sqlTypeName
 	 *            name of SQL data type.
 	 * @return a constant value with this data type.
@@ -520,7 +522,7 @@ public class StringConverter
 
 	/**
 	 * Get SQL data type of an object.
-	 * 
+	 *
 	 * @param literal
 	 *            object to get SQL data type for.
 	 * @return SQL data type name.

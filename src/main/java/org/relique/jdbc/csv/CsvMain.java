@@ -1,4 +1,4 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2013  Simon Chenery
  *
@@ -6,10 +6,12 @@
  *  modify it under the terms of the GNU Lesser General Public
  *  License as published by the Free Software Foundation; either
  *  version 2.1 of the License, or (at your option) any later version.
+ *
  *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *  Lesser General Public License for more details.
+ *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -75,7 +77,7 @@ public class CsvMain
 			}
 
 			if (argIndex < args.length)
-			{	
+			{
 				/*
 				 * Connect using URL containing directory name and properties.
 				 */
@@ -129,10 +131,10 @@ public class CsvMain
 					{
 						ResultSet resultSet = statement.getResultSet();
 						CsvDriver.writeToCsv(resultSet, System.out, writeHeaderLine);
-						
+
 						/*
 						 * No header line for second, third, ... queries, so that
-						 * output of several SQL queries can be concatenated.  
+						 * output of several SQL queries can be concatenated.
 						 */
 						writeHeaderLine = false;
 

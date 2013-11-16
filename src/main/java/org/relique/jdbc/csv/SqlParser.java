@@ -1,14 +1,17 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2001  Jonathan Ackerman
+ *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
  *  License as published by the Free Software Foundation; either
  *  version 2.1 of the License, or (at your option) any later version.
+ *
  *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *  Lesser General Public License for more details.
+ *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -23,7 +26,7 @@ import java.util.List;
 
 /**
  * SQL parser using JavaCC syntax definition file where.jj.
- * 
+ *
  * @author Jonathan Ackerman
  * @author Juan Pablo Morales
  * @author Mario Frasca
@@ -67,7 +70,7 @@ public class SqlParser
 
 	/**
 	 * Gets the tableName attribute of the SqlParser object
-	 * 
+	 *
 	 * @return The tableName value
 	 */
 	public String getTableName()
@@ -82,7 +85,7 @@ public class SqlParser
 
 	/**
 	 * Gets the columnNames attribute of the SqlParser object
-	 * 
+	 *
 	 * @return The columnNames value
 	 */
 	public List<Object[]> getColumns()

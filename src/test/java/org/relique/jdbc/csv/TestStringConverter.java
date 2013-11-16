@@ -1,22 +1,21 @@
-/*
-CsvJdbc - a JDBC driver for CSV files
-Copyright (C) 2009 Mario Frasca
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+/**
+ *  CsvJdbc - a JDBC driver for CSV files
+ *  Copyright (C) 2009 Mario Frasca
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package org.relique.jdbc.csv;
 
 import static org.junit.Assert.assertEquals;
@@ -33,31 +32,31 @@ import org.relique.jdbc.csv.StringConverter;
 
 /**
  * This class is used to test the SqlParser class.
- * 
+ *
  * @author Mario Frasca
  */
 public class TestStringConverter
-{	
+{
 	private static DateFormat toUTC;
 
 	@BeforeClass
 	public static void setUp()
 	{
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	@Test
 	public void testParseDateFixedSize()
 	{
 		StringConverter sc = new StringConverter("dd-mm-yyyy", "", "");
-		
+
 		Date got, expect;
 
 		got = sc.parseDate("01-01-1980");
 		expect = java.sql.Date.valueOf("1980-01-01");
 		assertEquals(expect, got);
-		
+
 		got = sc.parseDate("3-3-1983");
 		expect = java.sql.Date.valueOf("1970-01-01");
 		assertEquals(expect, got);
@@ -73,7 +72,7 @@ public class TestStringConverter
 		got = sc.parseDate("01-01-1980");
 		expect = java.sql.Date.valueOf("1980-01-01");
 		assertEquals(got, expect);
-		
+
 		got = sc.parseDate("3-3-1983");
 		expect = java.sql.Date.valueOf("1983-03-03");
 		assertEquals(got, expect);
@@ -89,7 +88,7 @@ public class TestStringConverter
 		got = sc.parseDate("1980-12-01");
 		expect = java.sql.Date.valueOf("1980-12-01");
 		assertEquals(got, expect);
-		
+
 		got = sc.parseDate("1983-3-9");
 		expect = java.sql.Date.valueOf("1983-03-09");
 		assertEquals(got, expect);
@@ -105,7 +104,7 @@ public class TestStringConverter
 		got = sc.parseDate("12-1980-01");
 		expect = java.sql.Date.valueOf("1980-12-01");
 		assertEquals(got, expect);
-		
+
 		got = sc.parseDate("3-1983-9");
 		expect = java.sql.Date.valueOf("1983-03-09");
 		assertEquals(got, expect);

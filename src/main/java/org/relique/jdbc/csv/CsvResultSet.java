@@ -1,20 +1,20 @@
-/*
+/**
  *	CsvJdbc - a JDBC driver for CSV files
  *	Copyright (C) 2001	Jonathan Ackerman
  *
- *	This library is free software; you can redistribute it and/or
- *	modify it under the terms of the GNU Lesser General Public
- *	License as published by the Free Software Foundation; either
- *	version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- *	This library is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *	Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *	You should have received a copy of the GNU Lesser General Public
- *	License along with this library; if not, write to the Free Software
- *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package org.relique.jdbc.csv;
 
@@ -70,7 +70,7 @@ public class CsvResultSet implements ResultSet
 	private CsvStatement statement;
 
 	private int resultSetType = ResultSet.TYPE_SCROLL_SENSITIVE;
-	
+
 	/** Helper class that performs the actual file reads */
 	private DataReader reader;
 
@@ -83,7 +83,7 @@ public class CsvResultSet implements ResultSet
 	private Expression whereClause;
 
 	private List<Expression> groupByColumns;
-	
+
 	private List<Expression> distinctColumns;
 
 	private Expression havingClause;
@@ -118,7 +118,7 @@ public class CsvResultSet implements ResultSet
 	private boolean nextResult = true;
 
 	private int maxRows;
-	
+
 	private int fetchSize;
 
 	private int fetchDirection;
@@ -175,7 +175,7 @@ public class CsvResultSet implements ResultSet
 	}
 
 	/**
-	 * Constructor for the CsvResultSet object 
+	 * Constructor for the CsvResultSet object
 	 *
 	 * @param statement Statement that produced this ResultSet
 	 * @param reader Helper class that performs the actual file reads
@@ -189,14 +189,14 @@ public class CsvResultSet implements ResultSet
 	 * @param columnTypes A comma-separated string specifying the type of the i-th column of the database table (not of the result).
 	 * @param whereColumnName the name of the column, needed late by a select *
 	 * @throws ClassNotFoundException in case the typed columns fail
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	protected CsvResultSet(CsvStatement statement,
 			DataReader reader,
 			String tableName,
 			List<Object []> queryEnvironment,
 			boolean isDistinct,
-			int resultSetType, 
+			int resultSetType,
 			Expression whereClause,
 			List<Expression> groupByColumns,
 			Expression havingClause,
@@ -273,7 +273,7 @@ public class CsvResultSet implements ResultSet
 			if (o[1] instanceof AsteriskExpression)
 			{
 				AsteriskExpression asteriskExpression = (AsteriskExpression)o[1];
-				
+
 				/*
 				 * Check that any table alias is valid.
 				 */
@@ -342,7 +342,7 @@ public class CsvResultSet implements ResultSet
 					if (!(n.value instanceof Integer))
 						throw new SQLException("Invalid ORDER BY column: " + n);
 					int index = n.value.intValue();
-					
+
 					/*
 					 * Column numbering in SQL starts at 1, not 0.
 					 */
@@ -425,7 +425,7 @@ public class CsvResultSet implements ResultSet
 				allReaderColumns.add(o[0].toString());
 			}
 		}
-		
+
 		/*
 		 * Check that all columns used in the WHERE, GROUP BY, HAVING
 		 * and ORDER BY clauses do exist in the table.
@@ -650,7 +650,7 @@ public class CsvResultSet implements ResultSet
 	}
 
 	/**
-	 * Check that all selected and ORDER BY columns also appear in any GROUP BY clause. 
+	 * Check that all selected and ORDER BY columns also appear in any GROUP BY clause.
 	 * @throws SQLException
 	 */
 	private void checkGroupBy() throws SQLException
@@ -1232,7 +1232,7 @@ public class CsvResultSet implements ResultSet
 	{
 		if (resultSetMetaData == null)
 		{
-			String[] readerTypeNames = reader.getColumnTypes(); 
+			String[] readerTypeNames = reader.getColumnTypes();
 			String[] readerColumnNames = reader.getColumnNames();
 			int[] readerColumnSizes = reader.getColumnSizes();
 			String tableAlias = reader.getTableAlias();
@@ -1270,7 +1270,7 @@ public class CsvResultSet implements ResultSet
 				try
 				{
 					Expression expr = ((Expression)o[1]);
-					
+
 					int columnSize = DataReader.DEFAULT_COLUMN_SIZE;
 					if (expr instanceof ColumnName)
 					{
@@ -2223,263 +2223,263 @@ public class CsvResultSet implements ResultSet
 	{
 		throw new UnsupportedOperationException("ResultSet.updateArray(String,java.sql.Array) unsupported");
 	}
-	
+
 	@Override
 	public int getHoldability() throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	@Override
 	public Reader getNCharacterStream(int columnIndex) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Reader getNCharacterStream(String columnLabel) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String getNString(int columnIndex) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String getNString(String columnLabel) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public boolean isClosed() throws SQLException
 	{
 		return isClosed;
 	}
-	
+
 	@Override
 	public void updateAsciiStream(int columnIndex, InputStream x)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateAsciiStream(String columnLabel, InputStream x)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateAsciiStream(int columnIndex, InputStream x, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateAsciiStream(String columnLabel, InputStream x, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBinaryStream(int columnIndex, InputStream x)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBinaryStream(String columnLabel, InputStream x)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBinaryStream(int columnIndex, InputStream x, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBinaryStream(String columnLabel, InputStream x,
 			long length) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBlob(int columnIndex, InputStream inputStream)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBlob(String columnLabel, InputStream inputStream)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBlob(int columnIndex, InputStream inputStream, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateBlob(String columnLabel, InputStream inputStream,
 			long length) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateCharacterStream(int columnIndex, Reader x)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateCharacterStream(String columnLabel, Reader reader)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateCharacterStream(int columnIndex, Reader x, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateCharacterStream(String columnLabel, Reader reader,
 			long length) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateClob(int columnIndex, Reader reader) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateClob(String columnLabel, Reader reader)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateClob(int columnIndex, Reader reader, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateClob(String columnLabel, Reader reader, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNCharacterStream(int columnIndex, Reader x)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNCharacterStream(String columnLabel, Reader reader)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNCharacterStream(int columnIndex, Reader x, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNCharacterStream(String columnLabel, Reader reader,
 			long length) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNClob(int columnIndex, Reader reader) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNClob(String columnLabel, Reader reader)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNClob(int columnIndex, Reader reader, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNClob(String columnLabel, Reader reader, long length)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNString(int columnIndex, String string)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNString(String columnLabel, String string)
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public boolean isWrapperFor(Class<?> arg0) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public <T> T unwrap(Class<T> arg0) throws SQLException
 	{
@@ -2509,72 +2509,72 @@ public class CsvResultSet implements ResultSet
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public NClob getNClob(String arg0) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public RowId getRowId(int arg0) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public RowId getRowId(String arg0) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public SQLXML getSQLXML(int arg0) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public SQLXML getSQLXML(String arg0) throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public void updateNClob(int arg0, NClob arg1) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateNClob(String arg0, NClob arg1) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateRowId(int arg0, RowId arg1) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateRowId(String arg0, RowId arg1) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateSQLXML(int arg0, SQLXML arg1) throws SQLException
 	{
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void updateSQLXML(String arg0, SQLXML arg1) throws SQLException
 	{

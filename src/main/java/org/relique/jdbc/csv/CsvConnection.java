@@ -1,4 +1,4 @@
-/*
+/**
  *  CsvJdbc - a JDBC driver for CSV files
  *  Copyright (C) 2001  Jonathan Ackerman
  *
@@ -142,7 +142,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Creates a new CsvConnection that takes the supplied path
-	 * 
+	 *
 	 * @param path
 	 *            directory where the CSV files are located
 	 */
@@ -163,7 +163,7 @@ public class CsvConnection implements Connection
 	/**
 	 * Create a table of all properties with keys that start with a given
 	 * prefix.
-	 * 
+	 *
 	 * @param info
 	 *            properties.
 	 * @param prefix
@@ -389,7 +389,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Creates a new CsvConnection that takes the supplied path and properties
-	 * 
+	 *
 	 * @param path
 	 *            directory where the CSV files are located
 	 * @param info
@@ -421,7 +421,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Creates a new database connection.
-	 * 
+	 *
 	 * @param tableReader
 	 *            user-provided class to return contents of each database table.
 	 * @param info
@@ -553,7 +553,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Remove closed statement from list of statements for this connection.
-	 * 
+	 *
 	 * @param statement
 	 *            statement to be removed.
 	 */
@@ -792,7 +792,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the path property
-	 * 
+	 *
 	 * @return current value for the path property
 	 */
 	protected String getPath()
@@ -821,7 +821,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the extension property
-	 * 
+	 *
 	 * @return current value for the extension property
 	 */
 	protected String getExtension()
@@ -831,7 +831,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the separator property
-	 * 
+	 *
 	 * @return current value for the separator property
 	 */
 	protected char getSeparator()
@@ -841,7 +841,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the headerline property
-	 * 
+	 *
 	 * @param tableName
 	 *            name of database table.
 	 * @return current value for the headerline property
@@ -859,7 +859,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the quotechar property
-	 * 
+	 *
 	 * @return current value for the quotechar property
 	 */
 	public char getQuotechar()
@@ -869,7 +869,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the suppressHeaders property
-	 * 
+	 *
 	 * @return current value for the suppressHeaders property
 	 */
 	protected boolean isSuppressHeaders()
@@ -884,7 +884,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * accessor method for defectiveHeaders property
-	 * 
+	 *
 	 * @return
 	 */
 	protected boolean isDefectiveHeaders()
@@ -894,7 +894,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * accessor method for defectiveHeaders property
-	 * 
+	 *
 	 * @return
 	 */
 	protected int getSkipLeadingDataLines()
@@ -904,7 +904,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the charset property
-	 * 
+	 *
 	 * @return current value for the suppressHeaders property
 	 */
 	protected String getCharset()
@@ -914,7 +914,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Accessor method for the trimHeaders property
-	 * 
+	 *
 	 * @return current value for the trimHeaders property
 	 */
 	public boolean getTrimHeaders()
@@ -1004,7 +1004,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Set column types for SQL queries.
-	 * 
+	 *
 	 * @param columnTypes
 	 *            comma-separated list of data types.
 	 * @deprecated Pass columnTypes when creating driver. To be removed in a
@@ -1029,7 +1029,7 @@ public class CsvConnection implements Connection
 
 	/**
 	 * Set flag for reading indexed files.
-	 * 
+	 *
 	 * @param indexedFiles
 	 *            flag true if indexed files are to be read.
 	 * @deprecated Pass indexedFiles when creating driver. To be removed in a
@@ -1251,7 +1251,7 @@ public class CsvConnection implements Connection
 	/**
 	 * Get list of table names (all files in the directory with the correct
 	 * suffix).
-	 * 
+	 *
 	 * @return list of table names.
 	 */
 	public List<String> getTableNames() throws SQLException
