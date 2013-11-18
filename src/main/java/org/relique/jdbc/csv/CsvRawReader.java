@@ -63,7 +63,7 @@ public class CsvRawReader
 	protected char commentChar = 0;
 	private boolean ignoreUnparseableLines;
 	protected CryptoFilter filter;
-	private String quoteStyle;
+	private QuoteStyle quoteStyle;
 	private ArrayList<int []> fixedWidthColumns;
 
 	/**
@@ -94,7 +94,7 @@ public class CsvRawReader
 			boolean suppressHeaders, char quoteChar, char commentChar,
 			String headerLine, String extension, boolean trimHeaders, boolean trimValues,
 			int skipLeadingLines, boolean ignoreUnparseableLines, CryptoFilter filter,
-			boolean defectiveHeaders, int skipLeadingDataLines, String quoteStyle,
+			boolean defectiveHeaders, int skipLeadingDataLines, QuoteStyle quoteStyle,
 			ArrayList<int []> fixedWidthColumns)
 			throws IOException, SQLException
 	{
@@ -400,20 +400,20 @@ public class CsvRawReader
 			{
 				char currentChar = line.charAt(currentPos);
 				if (value.length() == 0 && currentChar == quoteChar
-						&& !inQuotedString)
+						&& !inQuotedString && quoteStyle != QuoteStyle.NONE)
 				{
 					// acknowledge quoteChar only at beginning of value.
 					inQuotedString = true;
 					quotedLineNumber = input.getLineNumber();
 				}
-				else if (currentChar == '\\' && "C".equals(quoteStyle))
+				else if (currentChar == '\\' && quoteStyle == QuoteStyle.C)
 				{
 					// in C quoteStyle \\ escapes any character.
 					char nextChar = line.charAt(currentPos + 1);
 					value.append(nextChar);
 					currentPos++;
 				}
-				else if (currentChar == quoteChar)
+				else if (currentChar == quoteChar && quoteStyle != QuoteStyle.NONE)
 				{
 					char nextChar = line.charAt(currentPos + 1);
 					if (!inQuotedString)
@@ -425,7 +425,7 @@ public class CsvRawReader
 					else if (nextChar == quoteChar)
 					{
 						value.append(quoteChar);
-						if ("SQL".equals(quoteStyle))
+						if (quoteStyle == QuoteStyle.SQL)
 						{
 							// doubled quoteChar in quoted strings collapse to
 							// one single quoteChar in SQL quotestyle
