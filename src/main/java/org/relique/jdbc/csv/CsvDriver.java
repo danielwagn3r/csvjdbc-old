@@ -359,7 +359,7 @@ public class CsvDriver implements Driver
 			value = value.replace("\\", "\\\\");
 			value = value.replace("" + quoteChar, "\\" + quoteChar);
 		}
-		else if (quoteStyle == quoteStyle.SQL)
+		else if (quoteStyle == QuoteStyle.SQL)
 		{
 			value = value.replace("" + quoteChar, "" + quoteChar + quoteChar);
 		}
@@ -367,11 +367,10 @@ public class CsvDriver implements Driver
 		/*
 		 * Surround value with quotes if it contains any special characters.
 		 */
-		if (quoteStyle != QuoteStyle.NONE) {
-			if (value.indexOf(separator) >= 0 || value.indexOf(quoteChar) >= 0
-					|| value.indexOf('\r') >= 0 || value.indexOf('\n') >= 0) {
-				value = quoteChar + value + quoteChar;
-			}
+		if (quoteStyle != QuoteStyle.NONE
+				&& (value.indexOf(separator) >= 0 || value.indexOf(quoteChar) >= 0 || value.indexOf('\r') >= 0 || value
+						.indexOf('\n') >= 0)) {
+			value = quoteChar + value + quoteChar;
 		}
 		return value;
 	}
