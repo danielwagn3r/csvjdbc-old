@@ -28,6 +28,8 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -44,8 +46,9 @@ public class StringConverter
 	private String timeFormat;
 	private GregorianCalendar calendar;
 	private Pattern timestampPattern;
+	private SimpleDateFormat timestampFormat;
 
-	public StringConverter(String dateformat, String timeformat, String timeZoneName)
+	public StringConverter(String dateformat, String timeformat, String timestampformat, String timeZoneName)
 	{
 		dateFormat = dateformat;
 		timeFormat = timeformat;
@@ -53,8 +56,22 @@ public class StringConverter
 		calendar = new GregorianCalendar();
 		calendar.clear();
 		calendar.setTimeZone(timeZone);
-		timestampPattern = Pattern
+		if (timestampformat != null && timestampformat.length() > 0)
+		{
+			/*
+			 * Use Java API for parsing dates and times.
+			 */
+			timestampFormat = new SimpleDateFormat(timestampformat);
+			timestampFormat.setTimeZone(timeZone);
+		}
+		else
+		{
+			/*
+			 * Parse timestamps using a fixed regular expression.
+			 */
+			timestampPattern = Pattern
 				.compile("([0-9][0-9][0-9][0-9])-([0-9]?[0-9])-([0-9]?[0-9])[ T]([0-9]?[0-9]):([0-9]?[0-9]):([0-9]?[0-9]).*");
+		}
 	}
 
 	public String parseString(String str)
@@ -252,20 +269,17 @@ public class StringConverter
 		part = Pattern.compile("d+");
 		m = part.matcher(format);
 		if (m.find())
-			format = format.replace(m.group(), "([0-9]{"
-					+ (m.end() - m.start()) + ",2})");
+			format = format.replace(m.group(), "([0-9]{" + (m.end() - m.start()) + ",2})");
 
 		part = Pattern.compile("m+");
 		m = part.matcher(format);
 		if (m.find())
-			format = format.replace(m.group(), "([0-9]{"
-					+ (m.end() - m.start()) + ",2})");
+			format = format.replace(m.group(), "([0-9]{" + (m.end() - m.start()) + ",2})");
 
 		part = Pattern.compile("y+");
 		m = part.matcher(format);
 		if (m.find())
-			format = format.replace(m.group(), "([0-9]{"
-					+ (m.end() - m.start()) + ",4})");
+			format = format.replace(m.group(), "([0-9]{" + (m.end() - m.start()) + ",4})");
 
 		format = format + ".*";
 
@@ -343,21 +357,31 @@ public class StringConverter
 		Timestamp result = null;
 		try
 		{
-			Matcher matcher = timestampPattern.matcher(str);
-			if (matcher.matches())
+			if (timestampFormat != null)
 			{
-				int year = Integer.parseInt(matcher.group(1));
-				int month = Integer.parseInt(matcher.group(2)) - 1;
-				int date = Integer.parseInt(matcher.group(3));
-				int hours = Integer.parseInt(matcher.group(4));
-				int minutes = Integer.parseInt(matcher.group(5));
-				int seconds = Integer.parseInt(matcher.group(6));
-				calendar.set(year, month, date, hours, minutes, seconds);
-				result = new Timestamp(calendar.getTimeInMillis());
-				return result;
+				java.util.Date date = timestampFormat.parse(str);
+				result = new Timestamp(date.getTime());
+			}
+			else
+			{
+				Matcher matcher = timestampPattern.matcher(str);
+				if (matcher.matches())
+				{
+					int year = Integer.parseInt(matcher.group(1));
+					int month = Integer.parseInt(matcher.group(2)) - 1;
+					int date = Integer.parseInt(matcher.group(3));
+					int hours = Integer.parseInt(matcher.group(4));
+					int minutes = Integer.parseInt(matcher.group(5));
+					int seconds = Integer.parseInt(matcher.group(6));
+					calendar.set(year, month, date, hours, minutes, seconds);
+					result = new Timestamp(calendar.getTimeInMillis());
+				}
 			}
 		}
 		catch (RuntimeException e)
+		{
+		}
+		catch (ParseException e)
 		{
 		}
 		return result;
@@ -572,81 +596,81 @@ public class StringConverter
 
 		retval.add(new Object[]
 		{ "String", Integer.valueOf(Types.VARCHAR), shortMax, "'", "'", null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Boolean", Integer.valueOf(Types.BOOLEAN), shortMax, null, null,
-				null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Byte", Integer.valueOf(Types.TINYINT), shortMax, null, null, null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Short", Integer.valueOf(Types.SMALLINT), shortMax, null, null, null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Integer", Integer.valueOf(Types.INTEGER), shortMax, null, null,
-				null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Long", Integer.valueOf(Types.BIGINT), shortMax, null, null, null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Float", Integer.valueOf(Types.FLOAT), shortMax, null, null, null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Double", Integer.valueOf(Types.DOUBLE), shortMax, null, null, null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "BigDecimal", Integer.valueOf(Types.DECIMAL), shortMax, null, null,
-				null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Date", Integer.valueOf(Types.DATE), shortMax, "'", "'", null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Time", Integer.valueOf(Types.TIME), shortMax, "'", "'", null,
-				nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Timestamp", Integer.valueOf(Types.TIMESTAMP), shortMax, null, null,
-				null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		retval.add(new Object[]
 		{ "Asciistream", Integer.valueOf(Types.CLOB), shortMax, null, null,
-				null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
-				Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
-				intZero, intZero, intZero });
+			null, nullable, Boolean.TRUE, searchable, Boolean.FALSE,
+			Boolean.FALSE, Boolean.FALSE, null, shortZero, shortMax,
+			intZero, intZero, intZero });
 
 		return retval;
 	}

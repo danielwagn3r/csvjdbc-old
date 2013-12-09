@@ -16,7 +16,8 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.relique.jdbc.csv;
+
+ package org.relique.jdbc.csv;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -47,7 +48,7 @@ import org.junit.Test;
 
 /**
  * This class is used to test the CsvJdbc driver.
- *
+ * 
  * @author Mario Frasca
  */
 public class TestDbfDriver
@@ -73,13 +74,13 @@ public class TestDbfDriver
 		{
 			fail("Driver is not in the CLASSPATH -> " + e);
 		}
-		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+		toUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		toUTC.setTimeZone(TimeZone.getTimeZone("UTC"));  
 	}
 
 	/**
 	 * This creates several sentences with where and tests they work
-	 *
+	 * 
 	 * @throws SQLException
 	 */
 	@Test
@@ -327,7 +328,7 @@ public class TestDbfDriver
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath, props);
 		DatabaseMetaData metadata = conn.getMetaData();
-		ResultSet results = metadata.getColumns(null, null, "sample", "*");
+		ResultSet results = metadata.getColumns(null, null, "sample", "%");
 		assertTrue(results.next());
 		assertEquals("Incorrect table name", "sample", results.getString("TABLE_NAME"));
 		assertEquals("Incorrect column name", "NAME", results.getString("COLUMN_NAME"));
@@ -336,6 +337,25 @@ public class TestDbfDriver
 		assertEquals("Incorrect ordinal position", 1, results.getInt("ORDINAL_POSITION"));
 		assertTrue(results.next());
 		assertEquals("Incorrect column name", "KEY", results.getString(4));
+	}
+
+	@Test
+	public void testDatabaseMetadataColumnsPattern() throws SQLException
+	{
+		Properties props = new Properties();
+		props.put("fileExtension", ".dbf");
+
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath, props);
+		DatabaseMetaData metadata = conn.getMetaData();
+		ResultSet results = metadata.getColumns(null, null, "x%", "M%");
+		assertTrue(results.next());
+		assertEquals("Incorrect table name", "xbase", results.getString("TABLE_NAME"));
+		assertEquals("Incorrect column name", "MSG", results.getString("COLUMN_NAME"));
+		assertEquals("Incorrect column type", Types.VARCHAR, results.getInt("DATA_TYPE"));
+		assertEquals("Incorrect column type", "String", results.getString("TYPE_NAME"));
+		assertEquals("Incorrect ordinal position", 2, results.getInt("ORDINAL_POSITION"));
+		assertFalse(results.next());
 	}
 
 	@Test
@@ -355,10 +375,10 @@ public class TestDbfDriver
 		assertEquals("The NTAXYEAR is wrong", 2011, results.getInt("NTAXYEAR"));
 		assertEquals("The NNOTFCV is wrong", 0, results.getLong("NNOTFCV"));
 		assertEquals("The NASSASSRAT is wrong", 7250, Math.round(results.getFloat("NASSASSRAT") * 1000));
-		assertEquals("The NASSASSRAT is wrong", 7250, Math.round(results.getDouble("NASSASSRAT") * 1000));
+		assertEquals("The NASSASSRAT is wrong", 7250, Math.round(results.getDouble("NASSASSRAT") * 1000));		
 		assertFalse(results.next());
 	}
-
+	
 	@Test
 	public void testGetDate() throws SQLException
 	{
@@ -373,7 +393,7 @@ public class TestDbfDriver
 		assertTrue(results.next());
 		assertEquals("The DASSDATE is wrong", Date.valueOf("2012-12-25"), results.getDate(1));
 	}
-
+	
 	@Test
 	public void testGetTimestamp() throws SQLException
 	{
@@ -389,7 +409,7 @@ public class TestDbfDriver
 		assertEquals("The DASSDATE is wrong", Timestamp.valueOf("2012-12-25 00:00:00"),
 			results.getTimestamp(1));
 	}
-
+	
 	@Test
 	public void testCharset() throws SQLException
 	{
