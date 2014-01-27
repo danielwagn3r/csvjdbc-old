@@ -5,7 +5,7 @@
 
 	<groupId>net.sourceforge.csvjdbc</groupId>
 	<artifactId>csvjdbc</artifactId>
-	<version>1.0.19-SNAPSHOT</version>
+	<version>1.0.19-kwaxi1</version>
 	<packaging>jar</packaging>
 
 	<name>CsvJdbc</name>
@@ -311,7 +311,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.10</version>
+				<version>2.11</version>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -327,7 +327,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.5.2</version>
+				<version>2.5.3</version>
 				<configuration>
 					<findbugsXmlOutput>true</findbugsXmlOutput>
 					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
