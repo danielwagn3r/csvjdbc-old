@@ -117,7 +117,7 @@ public class TestAggregateFunctions
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Invalid column name: XXXX", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("invalidColumnName") + ": XXXX", "" + e);
 		}
 	}
 
@@ -135,7 +135,7 @@ public class TestAggregateFunctions
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Query columns cannot be combined with aggregate functions", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("columnsWithAggregateFunctions"), "" + e);
 		}
 	}
 
@@ -187,7 +187,7 @@ public class TestAggregateFunctions
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Aggregate functions not allowed in WHERE clause", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("noAggregateFunctions"), "" + e);
 		}
 	}
 

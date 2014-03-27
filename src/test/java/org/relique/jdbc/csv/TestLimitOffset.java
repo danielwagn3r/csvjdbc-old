@@ -242,7 +242,7 @@ public class TestLimitOffset
 		}
 		catch (SQLException e)
 		{
-			assertTrue(e.toString().startsWith("java.sql.SQLException: Syntax Error."));
+			assertTrue(e.toString().startsWith("java.sql.SQLException: " + CsvResources.getString("syntaxError")));
 		}
 	}
 }

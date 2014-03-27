@@ -138,7 +138,7 @@ public class SqlParser
 		}
 
 		if (environment.isEmpty())
-			throw new SQLException("Malformed SQL. No columns");
+			throw new SQLException(CsvResources.getString("noColumnsSelected"));
 
 		Iterator<ParsedExpression> it2 = parsedStatement.groupByEntries.iterator();
 		if (it2.hasNext())

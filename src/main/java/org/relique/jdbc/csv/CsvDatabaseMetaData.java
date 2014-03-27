@@ -80,8 +80,8 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getAttributes(String arg0, String arg1, String arg2,
 			String arg3) throws SQLException
 	{
-		throw new UnsupportedOperationException(
-				"DatabaseMetaData.getAttributes(String,String,String,String) unsupported");
+		throw new UnsupportedOperationException(CsvResources.getString("methodNotSupported") +
+			": DatabaseMetaData.getAttributes(String,String,String,String)");
 	}
 
 	@Override
@@ -208,8 +208,8 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getCrossReference(String arg0, String arg1, String arg2,
 			String arg3, String arg4, String arg5) throws SQLException
 	{
-		throw new UnsupportedOperationException(
-				"DatabaseMetaData.getCrossReference(String,String,String,String,String,String) unsupported");
+		throw new UnsupportedOperationException(CsvResources.getString("methodNotSupported") +
+			": DatabaseMetaData.getCrossReference(String,String,String,String,String,String)");
 	}
 
 	@Override
@@ -302,12 +302,11 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getIndexInfo(String catalog, String schema, String table,
 			boolean unique, boolean approximate) throws SQLException
 	{
-		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,NON_UNIQUE,INDEX_QUALIFIER,INDEX_NAME,TYPE,"
-				+ "ORDINAL_POSITION,COLUMN_NAME,ASC_OR_DESC,CARDINALITY,PAGES,FILTER_CONDITION";
+		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,NON_UNIQUE,INDEX_QUALIFIER,INDEX_NAME,TYPE," +
+			"ORDINAL_POSITION,COLUMN_NAME,ASC_OR_DESC,CARDINALITY,PAGES,FILTER_CONDITION";
 		String columnTypes = "String,String,String,Boolean,String,String,Short,Short,String,String,Integer,Integer,String";
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
@@ -456,8 +455,7 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,COLUMN_NAME,KEY_SEQ,PK_NAME";
 		String columnTypes = "String,String,String,String,Short,String";
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
@@ -465,8 +463,8 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getProcedureColumns(String arg0, String arg1, String arg2,
 			String arg3) throws SQLException
 	{
-		throw new UnsupportedOperationException(
-				"DatabaseMetaData.getProcedureColumns(String,String,String,String) unsupported");
+		throw new UnsupportedOperationException(CsvResources.getString("methodNotSupported") +
+			": DatabaseMetaData.getProcedureColumns(String,String,String,String)");
 	}
 
 	@Override
@@ -476,8 +474,7 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 		String columnNames = "PROCEDURE_CAT,PROCEDURE_SCHEM,PROCEDURE_NAME,reserved4,reserved5,reserved6,REMARKS,PROCEDURE_TYPE,SPECIFIC_NAME";
 		String columnTypes = "String,String,String,String,String,String,String,Short,String";
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
@@ -541,16 +538,16 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getSuperTables(String arg0, String arg1, String arg2)
 			throws SQLException
 	{
-		throw new UnsupportedOperationException(
-				"DatabaseMetaData.getSchemas(String,String,String) unsupported");
+		throw new UnsupportedOperationException(CsvResources.getString("methodNotSupported") +
+			": DatabaseMetaData.getSuperTables(String,String,String)");
 	}
 
 	@Override
 	public ResultSet getSuperTypes(String arg0, String arg1, String arg2)
 			throws SQLException
 	{
-		throw new UnsupportedOperationException(
-				"DatabaseMetaData.getSchemas(String,String,String) unsupported");
+		throw new UnsupportedOperationException(CsvResources.getString("methodNotSupported") +
+			"DatabaseMetaData.getSuperTypes(String,String,String)");
 	}
 
 	@Override
@@ -566,8 +563,7 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,GRANTOR,GRANTEE,PRIVILEGE,IS_GRANTABLE";
 		String columnTypes = "String,String,String,String,String,String,String";
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
@@ -575,8 +571,8 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getTables(String catalog, String schemaPattern,
 			String tableNamePattern, String[] types) throws SQLException
 	{
-		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,TABLE_TYPE,"
-			+ "REMARKS,TYPE_CAT,TYPE_SCHEM,TYPE_NAME,SELF_REFERENCING_COL_NAME,REF_GENERATION";
+		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,TABLE_TYPE," +
+			"REMARKS,TYPE_CAT,TYPE_SCHEM,TYPE_NAME,SELF_REFERENCING_COL_NAME,REF_GENERATION";
 		String columnTypes = "String,String,String,String,String,String,String,String,String,String";
 		List<String> tableNames = ((CsvConnection) createdByConnection).getTableNames();
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>(tableNames.size());
@@ -614,20 +610,18 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 			List<Object[]> columnValues) throws SQLException
 	{
 		ListDataReader reader = new ListDataReader(columnNames.split(","),
-				columnTypes.split(","), columnValues);
+			columnTypes.split(","), columnValues);
 		ArrayList<Object[]> queryEnvironment = new ArrayList<Object[]>();
-		queryEnvironment.add(new Object[]
-		{ "*", new AsteriskExpression("*") });
+		queryEnvironment.add(new Object[]{"*", new AsteriskExpression("*")});
 		ResultSet retval = null;
 
 		try
 		{
 			if (internalStatement == null)
-				internalStatement = (CsvStatement) createdByConnection
-						.createStatement();
+				internalStatement = (CsvStatement) createdByConnection.createStatement();
 			retval = new CsvResultSet(internalStatement, reader, "",
-					queryEnvironment, false, ResultSet.TYPE_FORWARD_ONLY, null, null, null, null, -1, 0,
-					columnTypes, 0);
+				queryEnvironment, false, ResultSet.TYPE_FORWARD_ONLY, null, null, null, null, -1, 0,
+				columnTypes, 0);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -641,12 +635,10 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	{
 		String columnNames = "TABLE_TYPE";
 		String columnTypes = "String";
-		Object[] data = new Object[]
-		{ "TABLE" };
+		Object[] data = new Object[]{"TABLE"};
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
 		columnValues.add(data);
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
@@ -659,33 +651,31 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	@Override
 	public ResultSet getTypeInfo() throws SQLException
 	{
-		String columnNames = "TYPE_NAME,DATA_TYPE,PRECISION,LITERAL_PREFIX,LITERAL_SUFFIX,CREATE_PARAMS,"
-				+ "NULLABLE,CASE_SENSITIVE,SEARCHABLE,UNSIGNED_ATTRIBUTE,FIXED_PREC_SCALE,AUTO_INCREMENT,"
-				+ "LOCAL_TYPE_NAME,MINIMUM_SCALE,MAXIMUM_SCALE,SQL_DATA_TYPE,SQL_DATETIME_SUB,NUM_PREC_RADIX";
-		String columnTypes = "String,Integer,Integer,String,String,String,Short,Boolean,Short,"
-				+ "Boolean,Boolean,Boolean,String,Short,Short,Integer,Integer,Integer";
+		String columnNames = "TYPE_NAME,DATA_TYPE,PRECISION,LITERAL_PREFIX,LITERAL_SUFFIX,CREATE_PARAMS," +
+			"NULLABLE,CASE_SENSITIVE,SEARCHABLE,UNSIGNED_ATTRIBUTE,FIXED_PREC_SCALE,AUTO_INCREMENT," +
+			"LOCAL_TYPE_NAME,MINIMUM_SCALE,MAXIMUM_SCALE,SQL_DATA_TYPE,SQL_DATETIME_SUB,NUM_PREC_RADIX";
+		String columnTypes = "String,Integer,Integer,String,String,String,Short,Boolean,Short," +
+			"Boolean,Boolean,Boolean,String,Short,Short,Integer,Integer,Integer";
 		List<Object[]> columnValues = StringConverter.getTypeInfo();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
 	@Override
 	public ResultSet getUDTs(String catalog, String schemaPattern,
-			String typeNamePattern, int[] types) throws SQLException
+		String typeNamePattern, int[] types) throws SQLException
 	{
 		String columnNames = "TYPE_CAT,TYPE_SCHEM,TYPE_NAME,CLASS_NAME,DATA_TYPE,REMARKS,BASE_TYPE";
 		String columnTypes = "String,String,String,String,Integer,String,Short";
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 
 	@Override
 	public String getURL() throws SQLException
 	{
-		return ((CsvConnection) createdByConnection).getURL();
+		return ((CsvConnection)createdByConnection).getURL();
 	}
 
 	@Override
@@ -698,8 +688,7 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 	public ResultSet getVersionColumns(String catalog, String schema,
 			String table) throws SQLException
 	{
-		return getBestRowIdentifier(catalog, schema, table, bestRowTemporary,
-				false);
+		return getBestRowIdentifier(catalog, schema, table, bestRowTemporary, false);
 	}
 
 	@Override
@@ -1336,8 +1325,7 @@ public class CsvDatabaseMetaData implements DatabaseMetaData
 		String columnNames = "TABLE_CAT,TABLE_SCHEM,TABLE_NAME,COLUMN_NAME,DATA_TYPE,COLUMN_SIZE,DECIMAL_DIGITS,NUM_PREC_RADIX,COLUMN_USAGE,REMARKS,CHAR_OCTET_LENGTH,IS_NULLABLE";
 		String columnTypes = "String,String,String,String,Integer,Integer,Integer,Integer,String,String,Integer,String";
 		ArrayList<Object[]> columnValues = new ArrayList<Object[]>();
-		ResultSet retval = createResultSet(columnNames, columnTypes,
-				columnValues);
+		ResultSet retval = createResultSet(columnNames, columnTypes, columnValues);
 		return retval;
 	}
 }

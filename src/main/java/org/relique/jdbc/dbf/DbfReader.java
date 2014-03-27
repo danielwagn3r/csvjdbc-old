@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.relique.io.DataReader;
+import org.relique.jdbc.csv.CsvResources;
 
 public class DbfReader extends DataReader
 {
@@ -62,7 +63,7 @@ public class DbfReader extends DataReader
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new SQLException("can't find the 'dans' library.");
+			throw new SQLException(CsvResources.getString("noDansDbf") + ": " + e);
 		}
 		try
 		{
@@ -78,7 +79,7 @@ public class DbfReader extends DataReader
 		}
 		catch (Exception e)
 		{
-			throw new SQLException("Error while being smart:" + e);
+			throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 		}
 		try
 		{
@@ -102,7 +103,7 @@ public class DbfReader extends DataReader
 		}
 		catch (Exception e)
 		{
-			throw new SQLException("Error while being smart:" + e);
+			throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 		}
 		dbfTypeToSQLType = new HashMap<String, String>();
 		dbfTypeToSQLType.put("CHARACTER", "String");
@@ -123,7 +124,7 @@ public class DbfReader extends DataReader
 			}
 			catch (Exception e)
 			{
-				throw new SQLException("Error while being smart:" + e);
+				throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 			}
 		}
 		table = null;
@@ -142,7 +143,7 @@ public class DbfReader extends DataReader
 			}
 			catch (Exception e)
 			{
-				throw new SQLException("Error while being smart:" + e);
+				throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 			}
 		}
 		return result;
@@ -163,7 +164,7 @@ public class DbfReader extends DataReader
 		}
 		catch (Exception e)
 		{
-			throw new SQLException("Error while being smart: " + e);
+			throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 		}
 	}
 
@@ -204,11 +205,11 @@ public class DbfReader extends DataReader
 			}
 			catch (Exception e)
 			{
-				throw new SQLException("Error while being smart:" + e);
+				throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 			}
 			result[i] = dbfTypeToSQLType.get(dbfType);
 			if (result[i] == null)
-				throw new SQLException("DBF Data Type not supported: " + dbfType);
+				throw new SQLException(CsvResources.getString("dbfTypeNotSupported") + ": " + dbfType);
 		}
 		return result;
 	}
@@ -225,7 +226,7 @@ public class DbfReader extends DataReader
 			}
 			catch (Exception e)
 			{
-				throw new SQLException("Error while being smart:" + e);
+				throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 			}
 		}
 		return result;
@@ -258,7 +259,7 @@ public class DbfReader extends DataReader
 			}
 			catch (Exception e)
 			{
-				throw new SQLException("Error while being smart: " + e);
+				throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
 			}
 		}
 		return result;

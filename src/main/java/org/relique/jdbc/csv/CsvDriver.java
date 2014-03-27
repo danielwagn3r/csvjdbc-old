@@ -40,6 +40,7 @@ public class CsvDriver implements Driver
 	public static final char DEFAULT_QUOTECHAR = '"';
 	public static final String DEFAULT_HEADERLINE = null;
 	public static final boolean DEFAULT_SUPPRESS = false;
+	public static final boolean DEFAULT_IS_HEADER_FIXED_WIDTH = true;
 	public static final boolean DEFAULT_TRIM_HEADERS = true;
 	public static final boolean DEFAULT_TRIM_VALUES = false;
 	public static final String DEFAULT_COLUMN_TYPES = "String";
@@ -59,6 +60,7 @@ public class CsvDriver implements Driver
 	public static final String QUOTECHAR = "quotechar";
 	public static final String HEADERLINE = "headerline";
 	public static final String SUPPRESS_HEADERS = "suppressHeaders";
+	public static final String IS_HEADER_FIXED_WIDTH = "isHeaderFixedWidth";
 	public static final String TRIM_HEADERS = "trimHeaders";
 	public static final String TRIM_VALUES = "trimValues";
 	public static final String COLUMN_TYPES = "columnTypes";
@@ -66,6 +68,7 @@ public class CsvDriver implements Driver
 	public static final String TIMESTAMP_FORMAT = "timestampFormat";
 	public static final String DATE_FORMAT = "dateFormat";
 	public static final String TIME_FORMAT = "timeFormat";
+	public static final String LOCALE = "locale";
 	public static final String COMMENT_CHAR = "commentChar";
 	public static final String SKIP_LEADING_LINES = "skipLeadingLines";
 	public static final String IGNORE_UNPARSEABLE_LINES = "ignoreNonParseableLines";
@@ -93,7 +96,7 @@ public class CsvDriver implements Driver
 
 	@Override
 	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
-			throws SQLException
+		throws SQLException
 	{
 		return new DriverPropertyInfo[0];
 	}
@@ -142,7 +145,7 @@ public class CsvDriver implements Driver
 					}
 					else
 					{
-						throw new SQLException("Invalid property: " + split[i]);
+						throw new SQLException(CsvResources.getString("invalidProperty") + ": " + split[i]);
 					}
 				}
 				catch (UnsupportedEncodingException e)
@@ -155,8 +158,7 @@ public class CsvDriver implements Driver
 		// get filepath from url
 		String filePath = url.substring(URL_PREFIX.length());
 
-		writeLog("CsvDriver:connect() - filePath="
-				+ filePath);
+		writeLog("CsvDriver:connect() - filePath=" + filePath);
 
 		CsvConnection connection;
 		if (filePath.startsWith(READER_CLASS_PREFIX))
@@ -180,14 +182,12 @@ public class CsvDriver implements Driver
 
 				if (!isInterfaceImplemented)
 				{
-					throw new SQLException(
-							"Class does not implement interface "
-									+ TableReader.class.getName() + ": "
-									+ className);
+					
+					throw new SQLException(CsvResources.getString("interfaceNotImplemented") +
+						": " + TableReader.class.getName() + ": " + className);
 				}
 				Object tableReaderInstance = clazz.newInstance();
-				connection = new CsvConnection(
-						(TableReader) tableReaderInstance, info, urlProperties);
+				connection = new CsvConnection((TableReader)tableReaderInstance, info, urlProperties);
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -215,8 +215,8 @@ public class CsvDriver implements Driver
 			}
 			catch (IOException e)
 			{
-				throw new SQLException("Failed opening ZIP file: "
-						+ zipFilename, e);
+				throw new SQLException(CsvResources.getString("zipOpenError") + ": " +
+					zipFilename, e);
 			}
 		}
 		else
@@ -230,11 +230,11 @@ public class CsvDriver implements Driver
 			File checkPath = new File(filePath);
 			if (!checkPath.exists())
 			{
-				throw new SQLException("Directory does not exist: " + filePath);
+				throw new SQLException(CsvResources.getString("dirNotFound") + ": " + filePath);
 			}
 			if (!checkPath.isDirectory())
 			{
-				throw new SQLException("Not a directory: " + filePath);
+				throw new SQLException(CsvResources.getString("dirNotFound") + ": " + filePath);
 			}
 
 			connection = new CsvConnection(filePath, info, urlProperties);
@@ -257,8 +257,8 @@ public class CsvDriver implements Driver
 
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException
 	{
-		throw new SQLFeatureNotSupportedException(
-				"Driver.getParentLogger() not supported");
+		throw new SQLFeatureNotSupportedException(CsvResources.getString("methodNotSupported") +
+			": Driver.getParentLogger()");
 	}
 
 	public static void writeLog(String message)
@@ -384,9 +384,7 @@ public class CsvDriver implements Driver
 		}
 		catch (SQLException e)
 		{
-			throw new RuntimeException(
-					"FATAL ERROR: Could not initialise CSV driver ! Message was: "
-							+ e.getMessage());
+			throw new RuntimeException(CsvResources.getString("initFailed") + ": " + e.getMessage());
 		}
 	}
 }

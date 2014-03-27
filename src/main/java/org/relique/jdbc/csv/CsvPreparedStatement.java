@@ -39,15 +39,14 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class CsvPreparedStatement extends CsvStatement implements
-		PreparedStatement
+public class CsvPreparedStatement extends CsvStatement implements PreparedStatement
 {
 	private Object[] parameters;
 	private String templateQuery;
 	private SqlParser parser;
 
 	protected CsvPreparedStatement(CsvConnection connection, String sql,
-			int resultSetType) throws SQLException
+		int resultSetType) throws SQLException
 	{
 		super(connection, resultSetType);
 
@@ -58,7 +57,7 @@ public class CsvPreparedStatement extends CsvStatement implements
 		}
 		catch (Exception e)
 		{
-			throw new SQLException("Syntax Error. " + e.getMessage());
+			throw new SQLException(CsvResources.getString("syntaxError") + ": " + e.getMessage());
 		}
 
 		parameters = new Object[parser.getPlaceholdersCount() + 1];
@@ -68,7 +67,7 @@ public class CsvPreparedStatement extends CsvStatement implements
 	private void checkParameterIndex(int parameterIndex) throws SQLException
 	{
 		if (parameterIndex < 1 || parameterIndex >= parameters.length)
-			throw new SQLException("Parameter index out of range: " + parameterIndex);
+			throw new SQLException(CsvResources.getString("parameterIndex") + ": " + parameterIndex);
 	}
 
 	@Override
@@ -90,7 +89,7 @@ public class CsvPreparedStatement extends CsvStatement implements
 	@Override
 	public boolean execute() throws SQLException
 	{
-		throw new SQLException("execute() not Supported !");
+		throw new SQLException(CsvResources.getString("methodNotSupported") + ": execute()");
 	}
 
 	@Override
@@ -99,8 +98,7 @@ public class CsvPreparedStatement extends CsvStatement implements
 
 		checkOpen();
 
-		CsvDriver.writeLog("CsvStatement:executeQuery() - sql= "
-				+ templateQuery);
+		CsvDriver.writeLog("CsvStatement:executeQuery() - sql= " + templateQuery);
 
 		/*
 		 * Close any previous ResultSet, as required by JDBC.

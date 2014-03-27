@@ -385,7 +385,7 @@ public class TestGroupBy
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Invalid column name: XXXX", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("invalidColumnName") + ": XXXX", "" + e);
 		}
 	}
 
@@ -404,7 +404,7 @@ public class TestGroupBy
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Column not included in GROUP BY: ID", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("columnNotInGroupBy") + ": ID", "" + e);
 		}
 	}
 
@@ -423,7 +423,7 @@ public class TestGroupBy
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: ORDER BY column not included in GROUP BY: ID", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("orderByNotInGroupBy") + ": ID", "" + e);
 		}
 	}
 
@@ -502,7 +502,7 @@ public class TestGroupBy
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Invalid column name: XXXX", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("invalidColumnName") + ": XXXX", "" + e);
 		}
 	}
 
@@ -521,7 +521,7 @@ public class TestGroupBy
 		}
 		catch (SQLException e)
 		{
-			assertEquals("java.sql.SQLException: Invalid HAVING column: NAME", "" + e);
+			assertEquals("java.sql.SQLException: " + CsvResources.getString("invalidHaving") + ": NAME", "" + e);
 		}
 	}
 
