@@ -94,7 +94,7 @@ class BinaryOperation extends Expression
             if (op == '/')
                 bil = bil.divide(bir);
             if (op == '%')
-                bil = bil.mod(bir);
+                bil = bil.remainder(bir);
             if (isLongExpression)
                 return new Long(bil.toString());
             else

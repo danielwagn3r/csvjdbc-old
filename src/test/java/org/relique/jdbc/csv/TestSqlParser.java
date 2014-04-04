@@ -541,6 +541,10 @@ public class TestSqlParser
         env.put("B", new Integer(3));
         assertEquals((Object)(new Integer("1")), cs.eval(env));
 
+        env.put("A", new Integer(-3));
+        env.put("B", new Integer(2));
+        assertEquals((Object)(new Integer("-1")), cs.eval(env));
+
         env.put("A", new Double(5));
         env.put("B", new Double(3));
         assertEquals((Object)(new Double("2")), cs.eval(env));
