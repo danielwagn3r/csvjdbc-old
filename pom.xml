@@ -5,7 +5,7 @@
 
 	<groupId>net.sourceforge.csvjdbc</groupId>
 	<artifactId>csvjdbc</artifactId>
-	<version>1.0.19-kwaxi-1</version>
+	<version>1.0.19-kwaxi-2</version>
 	<packaging>jar</packaging>
 
 	<name>CsvJdbc</name>
@@ -352,12 +352,20 @@
 			<url>sftp://web.sourceforge.net:/home/project-web/csvjdbc/htdocs/maven2
 			</url>
 		</site>
-		<repository>
+        <!-- repository>
 			<id>csvjdbc.sourceforge.net</id>
 			<name>SourceForge</name>
 			<url>sftp://web.sourceforge.net:/home/project-web/csvjdbc/htdocs/maven2
 			</url>
-		</repository>
+		</repository -->
+        <repository>
+            <id>nexus</id>
+            <url>https://repo.wagners.name/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus</id>
+            <url>https://repo.wagners.name/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
 	</distributionManagement>
 
 </project>
