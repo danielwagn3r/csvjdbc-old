@@ -95,6 +95,8 @@ class BinaryOperation extends Expression
                 bil = bil.divide(bir);
             if (op == '%')
                 bil = bil.remainder(bir);
+			if (op == '%')
+				bil = bil.remainder(bir);
             if (isLongExpression)
                 return new Long(bil.toString());
             else
@@ -119,7 +121,9 @@ class BinaryOperation extends Expression
             if (op == '/')
                 return new Double(bdl.divide(bdr, mc.getPrecision(), mc.getRoundingMode()).toString());
             if (op == '%')
+			if (op == '%')
                 return new Double(bdl.remainder(bdr, mc).toString());
+				return new Double(bdl.remainder(bdr, mc).toString());
         }
         catch (ClassCastException e)
         {
