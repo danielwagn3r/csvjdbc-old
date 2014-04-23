@@ -2214,6 +2214,28 @@ public class TestCsvDriver
 	}
 
 	@Test
+	public void testTrimFunction() throws SQLException
+	{
+		Properties props = new Properties();
+		props.put("columnTypes", "String,Int,Float,String");
+		props.put("commentChar", "#");
+		props.put("fileExtension", ".txt");
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:" + filePath, props);
+
+		Statement stmt = conn.createStatement();
+
+		ResultSet results = stmt.executeQuery("select TRIM(comment), TRIM('\tfoo bar\n') from with_comments");
+		assertTrue(results.next());
+		assertEquals("The comment is wrong", "some field", results.getString(1));
+		assertEquals("The trimmed value is wrong", "foo bar", results.getString(2));
+		assertTrue(results.next());
+		assertEquals("The comment is wrong", "other parameter", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("The comment is wrong", "still a field", results.getString(1));
+		assertFalse(results.next());		
+	}
+
+	@Test
 	public void testRoundFunction() throws SQLException
 	{
 		Properties props = new Properties();
@@ -4178,18 +4200,30 @@ public class TestCsvDriver
 		 */
 		CsvDriver.writeToCsv(results, printStream, true);
 
-		BufferedReader reader1 = new BufferedReader(new FileReader(filePath + File.separator + "sample.csv"));
-		BufferedReader reader2 = new BufferedReader(new StringReader(byteStream.toString("US-ASCII")));
-		String line1 = reader1.readLine();
-		String line2 = reader2.readLine();
-
-		while (line1 != null || line2 != null)
+		BufferedReader reader1 = null;
+		BufferedReader reader2 = null;
+		try
 		{
-			assertTrue("line1 is null", line1 != null);
-			assertTrue("line2 is null", line2 != null);
-			assertEquals("lines do not match", line1, line2);
-			line1 = reader1.readLine();
-			line2 = reader2.readLine();
+			reader1 = new BufferedReader(new FileReader(filePath + File.separator + "sample.csv"));
+			reader2 = new BufferedReader(new StringReader(byteStream.toString("US-ASCII")));
+			String line1 = reader1.readLine();
+			String line2 = reader2.readLine();
+	
+			while (line1 != null || line2 != null)
+			{
+				assertTrue("line1 is null", line1 != null);
+				assertTrue("line2 is null", line2 != null);
+				assertEquals("lines do not match", line1, line2);
+				line1 = reader1.readLine();
+				line2 = reader2.readLine();
+			}
+		}
+		finally
+		{
+			if (reader1 != null)
+				reader1.close();
+			if (reader2 != null)
+				reader2.close();
 		}
 		results.close();
 		stmt.close();
