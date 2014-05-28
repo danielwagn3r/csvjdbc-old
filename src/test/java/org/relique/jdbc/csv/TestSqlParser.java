@@ -272,7 +272,9 @@ public class TestSqlParser
         assertEquals("Incorrect WHERE", "NOT B [B] '20' 'AA'", whereClause.toString());
         parser.parse("SELECT * FROM test WHERE B LIKE '20 AND AA'");
         whereClause = parser.getWhereClause();
-        assertEquals("Incorrect WHERE", "L [B] '20 AND AA'", whereClause.toString());
+		parser.parse("SELECT * FROM test WHERE B LIKE '12^_34' ESCAPE '^'");
+		whereClause = parser.getWhereClause();
+		assertEquals("Incorrect WHERE", "L [B] '12^_34' ESCAPE '^'", whereClause.toString());
         parser.parse("SELECT * FROM test WHERE B NOT LIKE 'X%'");
         whereClause = parser.getWhereClause();
         assertEquals("Incorrect WHERE", "NOT L [B] 'X%'", whereClause.toString());
@@ -333,7 +335,7 @@ public class TestSqlParser
         assertEquals(true, parser.getWhereClause().isTrue(env));
 
         parser.parse("SELECT * FROM test WHERE (A='20' OR B='AA') AND c=1");
-        Expression whereClause = parser.getWhereClause();
+		LogicalExpression whereClause = parser.getWhereClause();
 
         env.clear();
         env.put("A", new String("20"));
@@ -545,6 +547,18 @@ public class TestSqlParser
         env.put("B", new Integer(2));
         assertEquals((Object)(new Integer("-1")), cs.eval(env));
 
+		env.put("A", new Integer(4));
+		env.put("B", new Integer(0));
+		try
+		{
+			cs.eval(env);
+			fail("Should raise a java.sql.SQLException");
+		}
+		catch (SQLException e)
+		{
+			
+		}
+
         env.put("A", new Double(5));
         env.put("B", new Double(3));
         assertEquals((Object)(new Double("2")), cs.eval(env));
@@ -582,7 +596,17 @@ public class TestSqlParser
         assertEquals((Object)(new Integer("2")), cs.eval(env));
         env.put("B", new Double(2));
         assertEquals((Object)(new Double("2.5")), cs.eval(env));
-    }
+
+		env.put("B", new Double(0));
+		try
+		{
+			cs.eval(env);
+			fail("Should raise a java.sql.SQLException");
+		}
+		catch (SQLException e)
+		{
+		}
+	}
 
     @Test
     public void testEvaluateShortOperations() throws ParseException, SQLException

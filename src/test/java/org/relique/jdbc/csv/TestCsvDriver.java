@@ -1357,6 +1357,46 @@ public class TestCsvDriver
 	}
 
 	@Test
+	public void testWhereWithLikeOperatorEscape() throws SQLException
+	{
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath);
+
+		Statement stmt = conn.createStatement();
+
+		ResultSet results = stmt
+				.executeQuery("select ID from escape where ID like 'index\\__'");
+
+		assertTrue(results.next());
+		assertEquals("The ID is wrong", "index_1", results.getString("ID"));
+		assertTrue(results.next());
+		assertEquals("The ID is wrong", "index_2", results.getString("ID"));
+		assertTrue(results.next());
+		assertEquals("The ID is wrong", "index_3", results.getString("ID"));
+		assertFalse(results.next());
+
+		ResultSet results2 = stmt
+				.executeQuery("select ID from escape where ID like 'index^__' escape '^'");
+
+		assertTrue(results2.next());
+		assertEquals("The ID is wrong", "index_1", results2.getString("ID"));
+		assertTrue(results2.next());
+		assertEquals("The ID is wrong", "index_2", results2.getString("ID"));
+		assertTrue(results2.next());
+		assertEquals("The ID is wrong", "index_3", results2.getString("ID"));
+		assertFalse(results2.next());
+		
+		ResultSet results3 = stmt
+				.executeQuery("select ID from escape where ID like 'index^%%' escape '^'");
+
+		assertTrue(results3.next());
+		assertEquals("The ID is wrong", "index%%", results3.getString("ID"));
+		assertTrue(results3.next());
+		assertEquals("The ID is wrong", "index%3", results3.getString("ID"));
+		assertFalse(results3.next());
+	}
+
+	@Test
 	public void testWhereWithUnselectedColumn() throws SQLException
 	{
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
@@ -2233,6 +2273,63 @@ public class TestCsvDriver
 		assertTrue(results.next());
 		assertEquals("The comment is wrong", "still a field", results.getString(1));
 		assertFalse(results.next());		
+
+		results = stmt.executeQuery("select TRIM(name, '#'), TRIM(name, '#h'), TRIM('00000', '0') from with_comments");
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "alpha", results.getString(1));
+		assertEquals("The trimmed value is wrong", "alpha", results.getString(2));
+		assertEquals("The trimmed value is wrong", "", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "beta", results.getString(1));
+		assertEquals("The trimmed value is wrong", "beta", results.getString(2));
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "hash", results.getString(1));
+		assertEquals("The trimmed value is wrong", "as", results.getString(2));
+		assertFalse(results.next());
+	}
+
+	@Test
+	public void testLTrimFunction() throws SQLException
+	{
+		Properties props = new Properties(); 
+		props.put("headerline", "TRANS_DATE,FROM_ACCT,FROM_BLZ,TO_ACCT,TO_BLZ,AMOUNT");
+		props.put("suppressHeaders", "true");
+		props.put("fileExtension", ".txt");
+		props.put("commentChar", "#");
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath, props);
+		Statement stmt = conn.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT LTRIM(TO_ACCT,'0'), LTRIM('0000','0'), LTRIM('','0'), LTRIM('  X  ') FROM transactions");
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "27853256", results.getString(1));
+		assertEquals("The trimmed value is wrong", "", results.getString(2));
+		assertEquals("The trimmed value is wrong", "", results.getString(3));
+		assertEquals("The trimmed value is wrong", "X  ", results.getString(4));
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "27234813", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "81824588", results.getString(1));
+	}
+
+	@Test
+	public void testRTrimFunction() throws SQLException
+	{
+		Properties props = new Properties(); 
+		props.put("headerline", "BLZ,BANK_NAME");
+		props.put("suppressHeaders", "true");
+		props.put("fileExtension", ".txt");
+		props.put("commentChar", "#");
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath, props);
+		Statement stmt = conn.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT RTRIM(BLZ,'0'), RTRIM(' ZZ ') FROM banks");
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "1", results.getString(1));
+		assertEquals("The trimmed value is wrong", " ZZ", results.getString(2));
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "1001001", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("The trimmed value is wrong", "10010111", results.getString(1));
 	}
 
 	@Test
@@ -2956,6 +3053,65 @@ public class TestCsvDriver
 	}
 
 	@Test
+	public void testLongSeparator() throws SQLException
+	{
+		Properties props = new Properties();
+		props.put("separator", "#@");
+		props.put("skipLeadingLines", "2");
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath, props);
+		Statement stmt = conn.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM evonix");
+
+		ResultSetMetaData metadata = results.getMetaData();
+		assertEquals("ID", metadata.getColumnName(1));
+		assertEquals("Name", metadata.getColumnName(2));
+		assertEquals("Birthday", metadata.getColumnName(3));
+		assertTrue(results.next());
+		assertEquals("1:ID is wrong", "0", results.getString(1));
+		assertEquals("2:Name is wrong", "(Florian)", results.getString(2));
+		assertEquals("3:Birthday is wrong", "01.01.1990", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("1:ID is wrong", "1", results.getString(1));
+		assertEquals("2:Name is wrong", "(Tobias)", results.getString(2));
+		assertEquals("3:Birthday is wrong", "01.01.1990", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("1:ID is wrong", "2", results.getString(1));
+		assertEquals("2:Name is wrong", "(#Mark)", results.getString(2));
+		assertEquals("3:Birthday is wrong", "01.01.1990", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("1:ID is wrong", "3", results.getString(1));
+		assertEquals("2:Name is wrong", "(@Jason)", results.getString(2));
+		assertEquals("3:Birthday is wrong", "01.01.1990", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("1:ID is wrong", "4", results.getString(1));
+		assertEquals("2:Name is wrong", "Robert", results.getString(2));
+		assertEquals("3:Birthday is wrong", "01.01.1990", results.getString(3));
+		assertFalse(results.next());
+	}
+
+	@Test
+	public void testLongCommentChar() throws SQLException
+	{
+		Properties props = new Properties();
+		props.put("separator", "#@");
+		props.put("commentChar", "rem");
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath, props);
+		Statement stmt = conn.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM evonix");
+
+		ResultSetMetaData metadata = results.getMetaData();
+		assertEquals("ID", metadata.getColumnName(1));
+		assertEquals("Name", metadata.getColumnName(2));
+		assertEquals("Birthday", metadata.getColumnName(3));
+		assertTrue(results.next());
+		assertEquals("1:ID is wrong", "0", results.getString(1));
+		assertEquals("2:Name is wrong", "(Florian)", results.getString(2));
+		assertEquals("3:Birthday is wrong", "01.01.1990", results.getString(3));
+	}
+
+	@Test
 	public void testWithNoData() throws SQLException
 	{
 		Properties props = new Properties();
@@ -3048,6 +3204,24 @@ public class TestCsvDriver
 			assertEquals("wrong exception and/or exception text!",
 				"java.sql.SQLException: " + CsvResources.getString("statementClosed"), "" + e);
 		}
+	}
+
+	@Test
+	public void testConnectionClosesStatements() throws SQLException
+	{
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath);
+		Statement stmt1 = conn.createStatement();
+		Statement stmt2 = conn.createStatement();
+		Statement stmt3 = conn.createStatement();
+		Statement stmt4 = conn.createStatement();
+
+		conn.close();
+
+		assertTrue(stmt1.isClosed());
+		assertTrue(stmt2.isClosed());
+		assertTrue(stmt3.isClosed());
+		assertTrue(stmt4.isClosed());
 	}
 
 	@Test

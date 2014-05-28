@@ -70,7 +70,7 @@ public class CsvConnection implements Connection
 	private String extension = CsvDriver.DEFAULT_EXTENSION;
 
 	/** Field separator to use */
-	private char separator = CsvDriver.DEFAULT_SEPARATOR;
+	private String separator = CsvDriver.DEFAULT_SEPARATOR;
 
 	/** Field quotechar to use */
 	private char quotechar = CsvDriver.DEFAULT_QUOTECHAR;
@@ -112,7 +112,7 @@ public class CsvConnection implements Connection
 	private String timeFormat;
 	private String timeZoneName;
 	private Locale locale = null;
-	private Character commentChar;
+	private String commentChar;
 
 	private int skipLeadingLines = 0;
 
@@ -206,7 +206,9 @@ public class CsvConnection implements Connection
 		// set the separator character to be used
 		if (info.getProperty(CsvDriver.SEPARATOR) != null)
 		{
-			separator = info.getProperty(CsvDriver.SEPARATOR).charAt(0);
+			separator = info.getProperty(CsvDriver.SEPARATOR);
+			if (separator.length() == 0)
+				throw new SQLException(CsvResources.getString("invalid") + " " + CsvDriver.SEPARATOR + ": " + separator);
 		}
 		// set the quotechar character to be used
 		prop = info.getProperty(CsvDriver.QUOTECHAR);
@@ -544,10 +546,10 @@ public class CsvConnection implements Connection
 	private synchronized void closeStatements() throws SQLException
 	{
 		// close all created statements (synchronized so that closing runs only one time from one thread).
-		for (Enumeration<Statement> i = statements.elements(); i.hasMoreElements();)
+		while (statements.size() > 0)
 		{
-			CsvStatement statement = (CsvStatement) i.nextElement();
-			statement.close();
+			// Closing each statement will callback and remove the statement from our list.
+			statements.firstElement().close();
 		}
 		statements.clear();
 	}
@@ -838,7 +840,7 @@ public class CsvConnection implements Connection
 	 *
 	 * @return current value for the separator property
 	 */
-	protected char getSeparator()
+	protected String getSeparator()
 	{
 		return separator;
 	}
@@ -1106,15 +1108,13 @@ public class CsvConnection implements Connection
 		}
 		else
 		{
-			commentChar = new Character(value.charAt(0));
+			commentChar = value;
 		}
 	}
 
-	public char getCommentChar()
+	public String getCommentChar()
 	{
-		if (commentChar == null)
-			return 0;
-		return commentChar.charValue();
+		return commentChar;
 	}
 
 	private void setSkipLeadingLines(String property)

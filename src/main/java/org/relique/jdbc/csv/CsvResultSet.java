@@ -81,13 +81,13 @@ public class CsvResultSet implements ResultSet
 	/** Last column name index read */
 	private int lastIndexRead = -1;
 
-	private Expression whereClause;
+	private LogicalExpression whereClause;
 
 	private List<Expression> groupByColumns;
 
 	private List<Expression> distinctColumns;
 
-	private Expression havingClause;
+	private LogicalExpression havingClause;
 
 	private List<Object []> orderByColumns;
 
@@ -123,6 +123,17 @@ public class CsvResultSet implements ResultSet
 	private boolean isClosed = false;
 
 	/**
+	 * Wrapper for any exception thrown by OrderByComparator.
+	 */
+	public class OrderByException extends RuntimeException
+	{	
+		public OrderByException(String message)
+		{
+			super(message);
+		}
+	}
+
+	/**
 	 * Compares SQL ORDER BY expressions for two records.
 	 */
 	public class OrderByComparator implements Comparator<Map<String, Object>>
@@ -130,6 +141,9 @@ public class CsvResultSet implements ResultSet
 		public int compare(Map<String, Object> recordEnvironment1, Map<String, Object> recordEnvironment2)
 		{
 			int retval = 0;
+			
+			try
+			{
 			int i = 0;
 			while (i < orderByColumns.size() && retval == 0)
 			{
@@ -165,6 +179,11 @@ public class CsvResultSet implements ResultSet
 					retval = -retval;
 				i++;
 			}
+			}
+			catch (SQLException e)
+			{
+				throw new OrderByException(e.getMessage());
+			}
 			return retval;
 		}
 	}
@@ -192,9 +211,9 @@ public class CsvResultSet implements ResultSet
 			List<Object []> queryEnvironment,
 			boolean isDistinct,
 			int resultSetType,
-			Expression whereClause,
+			LogicalExpression whereClause,
 			List<Expression> groupByColumns,
-			Expression havingClause,
+			LogicalExpression havingClause,
 			List<Object []> orderByColumns,
 			int sqlLimit,
 			int sqlOffset,
@@ -755,13 +774,20 @@ public class CsvResultSet implements ResultSet
 		}
 	}
 
-	private void sortRows(int sqlOffset)
+	private void sortRows(int sqlOffset) throws SQLException
 	{
 		Map<String, Object> []allRows = new Map[bufferedRecordEnvironments.size()];
 		for (int i = 0; i < allRows.length; i++)
 			allRows[i] = bufferedRecordEnvironments.get(i);
 		bufferedRecordEnvironments.clear();
+		try
+		{
 		Arrays.sort(allRows, new OrderByComparator());
+		}
+		catch (OrderByException e)
+		{
+			throw new SQLException(e.getMessage());
+		}
 		int rowLimit = allRows.length;
 		if (maxRows != 0 && maxRows < rowLimit)
 			rowLimit = maxRows;
@@ -875,7 +901,7 @@ public class CsvResultSet implements ResultSet
 		return thereWasAnAnswer;
 	}
 
-	private Map<String, Object> updateRecordEnvironment(boolean thereWasAnAnswer)
+	private Map<String, Object> updateRecordEnvironment(boolean thereWasAnAnswer) throws SQLException
 	{
 		HashMap<String, Object> objectEnvironment = new HashMap<String, Object>();
 		if(!thereWasAnAnswer)
@@ -920,7 +946,7 @@ public class CsvResultSet implements ResultSet
 		return objectEnvironment;
 	}
 
-	private boolean addDistinctEnvironment(Map<String, Object> objectEnvironment)
+	private boolean addDistinctEnvironment(Map<String, Object> objectEnvironment) throws SQLException
 	{
 		boolean isDistinct;
 

@@ -472,8 +472,8 @@ public class CsvStatement implements Statement
 			lastResultSet = null;
 			multipleParsers = null;
 			closed = true;
+			connection.removeStatement(this);
 		}
-		connection.removeStatement(this);
 	}
 
 	@Override

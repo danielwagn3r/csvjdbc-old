@@ -72,7 +72,7 @@ public class TestFileSetInputStream
 			inputTest = new BufferedReader(new InputStreamReader(
 				new FileSetInputStream(filePath,
 						"test-([0-9]{3})-([0-9]{8}).txt", new String[] {
-								"location", "file_date" }, ',', false, false, null, 0)));
+								"location", "file_date" }, ",", false, false, null, 0)));
 
 			Set<String> refSet = new HashSet<String>();
 			Set<String> testSet = new HashSet<String>();
@@ -113,7 +113,7 @@ public class TestFileSetInputStream
 			inputTest = new BufferedReader(new InputStreamReader(
 				new FileSetInputStream(filePath,
 						"test-([0-9]{3})-([0-9]{8}).txt", new String[] {
-								"location", "file_date" }, ',', true, false, null, 0)));
+								"location", "file_date" }, ",", true, false, null, 0)));
 
 			Set<String> refSet = new HashSet<String>();
 			Set<String> testSet = new HashSet<String>();
@@ -154,7 +154,7 @@ public class TestFileSetInputStream
 			inputTest = new BufferedReader(new InputStreamReader(
 				new FileSetInputStream(filePath,
 						"headerless-([0-9]{3})-([0-9]{8}).txt", new String[] {
-								"location", "file_date" }, ',', true, true, null, 0)));
+								"location", "file_date" }, ",", true, true, null, 0)));
 
 			Set<String> refSet = new HashSet<String>();
 			Set<String> testSet = new HashSet<String>();
@@ -193,7 +193,7 @@ public class TestFileSetInputStream
 			inputTest = new BufferedReader(new InputStreamReader(
 				new FileSetInputStream(filePath,
 						"empty-([0-9]+).txt", new String[] {
-							"EMPTY_ID"}, ',', false, false, null, 0)));
+							"EMPTY_ID"}, ",", false, false, null, 0)));
 
 			Set<String> refSet = new HashSet<String>();
 			Set<String> testSet = new HashSet<String>();
@@ -223,7 +223,7 @@ public class TestFileSetInputStream
 	{
 		FileSetInputStream in = new FileSetInputStream(filePath,
 					"test-([0-9]{3})-([0-9]{8}).txt", new String[] {
-					"location", "file_date"}, ',', false, false, null, 0);
+					"location", "file_date"}, ",", false, false, null, 0);
 
 		in.read();
 		in.read();

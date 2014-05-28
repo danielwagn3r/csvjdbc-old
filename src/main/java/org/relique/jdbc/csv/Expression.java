@@ -18,13 +18,14 @@
  */
 package org.relique.jdbc.csv;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public abstract class Expression
 {
-	public Object eval(Map<String, Object> env)
+	public Object eval(Map<String, Object> env) throws SQLException
 	{
 		return null;
 	}
@@ -35,9 +36,5 @@ public abstract class Expression
 	public List<AggregateFunction> aggregateFunctions()
 	{
 		return new LinkedList<AggregateFunction>();
-	}
-	public boolean isTrue(Map<String, Object> env)
-	{
-	    return false;
 	}
 }

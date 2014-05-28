@@ -29,6 +29,7 @@ PARSER_BEGIN(ExpressionParser)
 package org.relique.jdbc.csv;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.math.BigInteger;
@@ -43,18 +44,10 @@ import java.util.LinkedList;
 
 public class ExpressionParser
 {
-    ParsedExpression content;
-    private List<ParsedExpression> queryEntries;
-    private boolean isDistinct;
-    private String tableName;
-    private String tableAlias;
-    private List<ParsedExpression> groupByEntries;
-    private ParsedExpression havingClause;
-    private List<ParsedExpression> orderByEntries;
-    private int limit;
-    private int offset;
-    Date currentDate;
-    Time currentTime;
+	private ParsedExpression content;
+	private Date currentDate;
+	private Time currentTime;
+
     public void parseLogicalExpression()throws ParseException
     {
         content = logicalExpression();
@@ -76,16 +69,6 @@ public class ExpressionParser
         /* Reset prepared statement place-holder counter */
         Placeholder.nextIndex = 1;
         ParsedStatement parsedStatement = singleStatement();
-        queryEntries = parsedStatement.queryEntries;
-        isDistinct = parsedStatement.isDistinct;
-        tableName = parsedStatement.tableName;
-        tableAlias = parsedStatement.tableAlias;
-        content = parsedStatement.whereClause;
-        groupByEntries = parsedStatement.groupByEntries;
-        havingClause = parsedStatement.havingClause;
-        orderByEntries = parsedStatement.orderByEntries;
-        limit = parsedStatement.limit;
-        offset = parsedStatement.offset;
         return parsedStatement;
     }
     public List<ParsedStatement> parseMultipleStatements()throws ParseException
@@ -95,7 +78,7 @@ public class ExpressionParser
         List<ParsedStatement> statements = multipleStatements();
         return statements;
     }
-    public Object eval(Map<String, Object> env)
+	public Object eval(Map<String, Object> env) throws SQLException
     {
         return content.eval(env);
     }
@@ -223,6 +206,10 @@ TOKEN:
 }
 TOKEN:
 {
+	<ESCAPE:"ESCAPE">
+}
+TOKEN:
+{
     <BETWEEN:"BETWEEN">
 }
 TOKEN:
@@ -280,6 +267,14 @@ TOKEN:
 TOKEN:
 {
 	<TRIM:"TRIM">
+}
+TOKEN:
+{
+	<LTRIM:"LTRIM">
+}
+TOKEN:
+{
+	<RTRIM:"RTRIM">
 }
 TOKEN:
 {
@@ -611,6 +606,7 @@ LogicalExpression relationalExpression():
 }
 {
     {
+		arg3 = null;
         negate = false;
         inEntries = new LinkedList<Expression>();
     }
@@ -625,9 +621,9 @@ LogicalExpression relationalExpression():
             expr = new NotExpression(expr);
         return expr;
     }
-    | <LIKE>arg2 = binaryOperation()
+	| <LIKE>arg2 = binaryOperation()(<ESCAPE>arg3 = binaryOperation())?
     {
-        expr = new LikeExpression(arg1, arg2);
+		expr = new LikeExpression(arg1, arg2, arg3);
         if (negate)
             expr = new NotExpression(expr);
         return expr;
@@ -727,7 +723,7 @@ Expression multiplyOperation():
 Expression simpleExpression():
 {
     Expression arg;
-    Expression arg2;
+	Expression arg2 = null;
     boolean isDistinct;
 }
 {
@@ -743,9 +739,20 @@ Expression simpleExpression():
     {
         return new SQLLowerFunction(arg);
     }
-	| <TRIM> <OPENPARENTHESIS> arg = binaryOperation() <CLOSEPARENTHESIS>
+	| <TRIM> <OPENPARENTHESIS> arg = binaryOperation() (<COMMA>
+		arg2 = binaryOperation())? <CLOSEPARENTHESIS>
 	{
-		return new SQLTrimFunction(arg);
+		return new SQLTrimFunction(arg, arg2, SQLTrimFunction.Type.BOTH);
+	}
+	| <LTRIM> <OPENPARENTHESIS> arg = binaryOperation() (<COMMA>
+		arg2 = binaryOperation())? <CLOSEPARENTHESIS>
+	{
+		return new SQLTrimFunction(arg, arg2, SQLTrimFunction.Type.LEADING);
+	}
+	| <RTRIM> <OPENPARENTHESIS> arg = binaryOperation() (<COMMA>
+		arg2 = binaryOperation())? <CLOSEPARENTHESIS>
+	{
+		return new SQLTrimFunction(arg, arg2, SQLTrimFunction.Type.TRAILING);
 	}
     | <LENGTH> <OPENPARENTHESIS> arg = binaryOperation() <CLOSEPARENTHESIS>
     {
@@ -848,7 +855,7 @@ Expression columnName():
     Token t;
 }
 {
-	(t=<NAME>|t=<DAYOFMONTH>|t=<MONTH>|t=<YEAR>|t=<HOUROFDAY>|t=<MINUTE>|t=<SECOND>|t=<LOWER>|t=<ROUND>|t=<UPPER>|t=<TRIM>|t=<LENGTH>|t=<NULLIF>|t=<AVG>|t=<COUNT>|t=<MAX>|t=<MIN>|t=<SUM>)
+	(t=<NAME>|t=<DAYOFMONTH>|t=<MONTH>|t=<YEAR>|t=<HOUROFDAY>|t=<MINUTE>|t=<SECOND>|t=<LOWER>|t=<ROUND>|t=<UPPER>|t=<TRIM>|t=<LTRIM>|t=<RTRIM>|t=<LENGTH>|t=<NULLIF>|t=<AVG>|t=<COUNT>|t=<MAX>|t=<MIN>|t=<SUM>)
     {
         return new ColumnName(StringConverter.removeQuotes(t.image));
     }
@@ -914,7 +921,7 @@ Expression columnAlias():
     Token t;
 }
 {
-	(t=<NAME>|t=<DAYOFMONTH>|t=<MONTH>|t=<YEAR>|t=<HOUROFDAY>|t=<MINUTE>|t=<SECOND>|t=<LOWER>|t=<ROUND>|t=<UPPER>|t=<TRIM>|t=<LENGTH>|t=<NULLIF>|t=<AVG>|t=<COUNT>|t=<MAX>|t=<MIN>|t=<SUM>)
+	(t=<NAME>|t=<DAYOFMONTH>|t=<MONTH>|t=<YEAR>|t=<HOUROFDAY>|t=<MINUTE>|t=<SECOND>|t=<LOWER>|t=<ROUND>|t=<UPPER>|t=<TRIM>|t=<LTRIM>|t=<RTRIM>|t=<LENGTH>|t=<NULLIF>|t=<AVG>|t=<COUNT>|t=<MAX>|t=<MIN>|t=<SUM>)
     {
         return new ColumnName(StringConverter.removeQuotes(t.image));
     }

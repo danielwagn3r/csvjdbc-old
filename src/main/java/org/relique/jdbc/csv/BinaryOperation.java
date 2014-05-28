@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -39,7 +40,7 @@ class BinaryOperation extends Expression
         this.left = left;
         this.right = right;
     }
-    public Object eval(Map<String, Object> env)
+	public Object eval(Map<String, Object> env) throws SQLException
     {
         Object leftEval = left.eval(env);
         Object rightEval = right.eval(env);
@@ -95,8 +96,6 @@ class BinaryOperation extends Expression
                 bil = bil.divide(bir);
             if (op == '%')
                 bil = bil.remainder(bir);
-			if (op == '%')
-				bil = bil.remainder(bir);
             if (isLongExpression)
                 return new Long(bil.toString());
             else
@@ -105,6 +104,12 @@ class BinaryOperation extends Expression
         catch (ClassCastException e)
         {
         }
+		catch (ArithmeticException e)
+		{
+			/* probably a divide by zero */
+			throw new SQLException(e.getMessage());
+		}
+
         try
         {
             Number leftN = (Number)leftEval;
@@ -121,13 +126,17 @@ class BinaryOperation extends Expression
             if (op == '/')
                 return new Double(bdl.divide(bdr, mc.getPrecision(), mc.getRoundingMode()).toString());
             if (op == '%')
-			if (op == '%')
                 return new Double(bdl.remainder(bdr, mc).toString());
-				return new Double(bdl.remainder(bdr, mc).toString());
         }
         catch (ClassCastException e)
         {
         }
+		catch (ArithmeticException e)
+		{
+			/* probably a divide by zero */
+			throw new SQLException(e.getMessage());
+		}
+
         try
         {
             if (op == '+' && leftEval instanceof Date)
