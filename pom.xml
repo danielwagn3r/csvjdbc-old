@@ -5,7 +5,7 @@
 
     <groupId>net.sourceforge.csvjdbc</groupId>
     <artifactId>csvjdbc</artifactId>
-  <version>1.0.21-kwaxi-2</version>
+  <version>1.0.21-kwaxi-3</version>
     <packaging>jar</packaging>
 
     <name>CsvJdbc</name>
@@ -359,11 +359,11 @@
             </url>
         </repository -->
         <repository>
-            <id>nexus</id>
+            <id>wagners-nexus</id>
             <url>https://repo.wagners.name/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
-            <id>nexus</id>
+            <id>wagners-nexus</id>
             <url>https://repo.wagners.name/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
