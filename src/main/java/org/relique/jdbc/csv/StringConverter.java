@@ -181,13 +181,13 @@ public class StringConverter
 		try
 		{
 			Byte b;
-			if (str == null)
+			if (str == null || str.length() == 0)
 				b = null;
 			else
 				b = Byte.valueOf(Byte.parseByte(str));
 			return b;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -198,13 +198,13 @@ public class StringConverter
 		try
 		{
 			Short s;
-			if (str == null)
+			if (str == null || str.length() == 0)
 				s = null;
 			else
 				s = Short.valueOf(Short.parseShort(str));
 			return s;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -215,13 +215,13 @@ public class StringConverter
 		try
 		{
 			Integer i;
-			if (str == null)
+			if (str == null || str.length() == 0)
 				i = null;
 			else
 				i = Integer.valueOf(Integer.parseInt(str));
 			return i;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -232,13 +232,13 @@ public class StringConverter
 		try
 		{
 			Long l;
-			if (str == null)
+			if (str == null || str.length() == 0)
 				l = null;
 			else
 				l = Long.valueOf(Long.parseLong(str));
 			return l;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -249,7 +249,7 @@ public class StringConverter
 		try
 		{
 			Float f;
-			if (str == null)
+			if (str == null || str.length() == 0)
 			{
 				f = null;
 			}
@@ -260,7 +260,7 @@ public class StringConverter
 			}
 			return f;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -271,7 +271,7 @@ public class StringConverter
 		try
 		{
 			Double d;
-			if (str == null)
+			if (str == null || str.length() == 0)
 			{
 				d = null;
 			}
@@ -282,7 +282,7 @@ public class StringConverter
 			}
 			return d;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -310,13 +310,13 @@ public class StringConverter
 		try
 		{
 			BigDecimal bd;
-			if (str == null)
+			if (str == null || str.length() == 0)
 				bd = null;
 			else
 				bd = new BigDecimal(str);
 			return bd;
 		}
-		catch (RuntimeException e)
+		catch (NumberFormatException e)
 		{
 			return null;
 		}
@@ -398,7 +398,7 @@ public class StringConverter
 		try
 		{
 			Date sqlResult = null;
-			if (str != null)
+			if (str != null && str.length() > 0)
 			{
 				if (simpleDateFormat != null)
 				{
@@ -428,7 +428,7 @@ public class StringConverter
 		try
 		{
 			Time sqlResult = null;
-			if (str != null)
+			if (str != null && str.length() > 0)
 			{
 				str = str.trim();
 				while (str.length() < timeFormat.length())
@@ -456,7 +456,7 @@ public class StringConverter
 		Timestamp result = null;
 		try
 		{
-			if (str != null)
+			if (str != null && str.length() > 0)
 			{
 				if (timestampFormat != null)
 				{
