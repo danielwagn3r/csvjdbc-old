@@ -1,6 +1,6 @@
-/**
+/*
  *  CsvJdbc - a JDBC driver for CSV files
- *  Copyright (C) 2008  Mario Frasca
+ *  Copyright (C) 2014  Simon Chenery
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -18,18 +18,24 @@
  */
 package org.relique.jdbc.csv;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
-abstract class AggregateFunction extends Expression
+class ParsedTable
 {
-	/*
-	 * Key for column name in database rows that is accumulating
-	 * the aggregate function value.
-	 */
-	public static final String GROUPING_COLUMN_NAME = "@GROUPROWS";
+	private String tableName;
+	private String tableAlias;
 
-	public abstract List<String> aggregateColumns();
-	public abstract void processRow(Map<String, Object> env) throws SQLException;
+	public ParsedTable(String tableName, String tableAlias)
+	{
+		this.tableName = tableName;
+		this.tableAlias = tableAlias;
+	}
+
+	public String getTableName()
+	{
+		return tableName;
+	}
+
+	public String getTableAlias()
+	{
+		return tableAlias;
+	}
 }

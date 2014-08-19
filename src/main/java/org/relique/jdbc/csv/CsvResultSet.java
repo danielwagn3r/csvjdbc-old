@@ -153,12 +153,12 @@ public class CsvResultSet implements ResultSet
 				recordEnvironment = recordEnvironment1;
 				Map<String, Object> objectEnvironment1 = updateRecordEnvironment(true);
 				if (converter != null)
-					objectEnvironment1.put("@STRINGCONVERTER", converter);
+						objectEnvironment1.put(StringConverter.COLUMN_NAME, converter);
 				Comparable<Object> result1 = (Comparable<Object>)expr.eval(objectEnvironment1);
 				recordEnvironment = recordEnvironment2;
 				Map<String, Object> objectEnvironment2 = updateRecordEnvironment(true);
 				if (converter != null)
-					objectEnvironment2.put("@STRINGCONVERTER", converter);
+						objectEnvironment2.put(StringConverter.COLUMN_NAME, converter);
 				Comparable<Object> result2 = (Comparable<Object>)expr.eval(objectEnvironment2);
 				if (result1 == null)
 				{
@@ -501,7 +501,7 @@ public class CsvResultSet implements ResultSet
 				{
 					Map<String, Object> objectEnvironment = updateRecordEnvironment(true);
 					if (converter != null)
-						objectEnvironment.put("@STRINGCONVERTER", converter);
+						objectEnvironment.put(StringConverter.COLUMN_NAME, converter);
 					ArrayList<Object> groupByKeys = new ArrayList<Object>(this.groupByColumns.size());
 					for (Expression expr : this.groupByColumns)
 					{
@@ -527,7 +527,7 @@ public class CsvResultSet implements ResultSet
 					 * later calculate any aggregate functions for each group.
 					 */
 					Map<String, Object> firstRow = new HashMap<String, Object>(values.get(0));
-					firstRow.put("@GROUPROWS", values);
+					firstRow.put(AggregateFunction.GROUPING_COLUMN_NAME, values);
 
 					if (this.havingClause == null || this.havingClause.isTrue(firstRow))
 						bufferedRecordEnvironments.add(firstRow);
@@ -930,7 +930,7 @@ public class CsvResultSet implements ResultSet
 		 * Always include any group of rows so we have assembled so we can evaluate
 		 * any aggregate functions.
 		 */
-		String key = "@GROUPROWS";
+		String key = AggregateFunction.GROUPING_COLUMN_NAME;
 		Object groupRows = recordEnvironment.get(key);
 		if (groupRows != null)
 			objectEnvironment.put(key, groupRows);
@@ -939,7 +939,7 @@ public class CsvResultSet implements ResultSet
 		 * Always include the data type converter object so we can correctly
 		 * convert data types when evaluating expressions such as MYDATE > '2012-06-31'.
 		 */
-		key = "@STRINGCONVERTER";
+		key = StringConverter.COLUMN_NAME;
 		Object stringConverter = recordEnvironment.get(key);
 		if (stringConverter != null)
 			objectEnvironment.put(key, stringConverter);
@@ -1324,7 +1324,7 @@ public class CsvResultSet implements ResultSet
 					env.put(tableAlias + "." + columnName, literal);
 			}
 			if (converter != null)
-				env.put("@STRINGCONVERTER", converter);
+				env.put(StringConverter.COLUMN_NAME, converter);
 
 			for(int i=0; i<columnCount; i++)
 			{
