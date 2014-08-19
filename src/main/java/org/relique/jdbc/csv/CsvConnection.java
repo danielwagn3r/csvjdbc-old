@@ -40,7 +40,6 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -455,7 +454,6 @@ public class CsvConnection implements Connection
 
 	private void setQuoteStyle(QuoteStyle property)
 	{
-		// TODO Auto-generated method stub
 		quoteStyle = property;
 	}
 
