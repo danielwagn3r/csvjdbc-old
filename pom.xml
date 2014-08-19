@@ -5,7 +5,7 @@
 
     <groupId>net.sourceforge.csvjdbc</groupId>
     <artifactId>csvjdbc</artifactId>
-  <version>1.0.21-kwaxi-4</version>
+  <version>1.0.21-kwaxi-5</version>
     <packaging>jar</packaging>
 
     <name>CsvJdbc</name>
