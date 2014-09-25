@@ -825,6 +825,7 @@ Expression simpleExpression():
 	Expression arg2 = null;
     boolean isDistinct;
 	ParsedStatement parsedStatement;
+	Token t;
 }
 {
 	<OPENPARENTHESIS> parsedStatement = selectStatement() <CLOSEPARENTHESIS>
@@ -930,6 +931,11 @@ Expression simpleExpression():
     {
         return new SQLAvgFunction(isDistinct, arg);
     }
+	| t=<NAME> <OPENPARENTHESIS> (arg = binaryOperation(){args.add(arg);}
+		(<COMMA> arg = binaryOperation(){args.add(arg);})*)? <CLOSEPARENTHESIS>
+	{
+		return new SQLUserFunction(t.image, args);
+	}
     | arg = columnName()
     {
         return arg;
