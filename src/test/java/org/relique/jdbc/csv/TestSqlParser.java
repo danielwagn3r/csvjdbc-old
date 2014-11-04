@@ -296,6 +296,35 @@ public class TestSqlParser
         catch (ParseException e)
         {
         }
+		catch (SQLException e)
+		{
+		}
+
+		try
+		{
+			query = "SELECT * FROM test WHERE A * B + 1";
+			parser.parse(query);
+			fail("incorrect query '" + query + "' parsed as correct");
+		}
+		catch (ParseException e)
+		{
+		}
+		catch (SQLException e)
+		{
+		}
+
+		try
+		{
+			query = "SELECT (B > 5) FROM test";
+			parser.parse(query);
+			fail("incorrect query '" + query + "' parsed as correct");
+		}
+		catch (ParseException e)
+		{
+		}
+		catch (SQLException e)
+		{
+		}
 
         parser.parse("SELECT * FROM test WHERE B = (20)");
         whereClause = parser.getWhereClause();
@@ -308,6 +337,10 @@ public class TestSqlParser
         parser.parse("SELECT * FROM test WHERE B + 20 = 30");
         whereClause = parser.getWhereClause();
         assertEquals("Incorrect WHERE", "= + [B] 20 30", whereClause.toString());
+
+		parser.parse("SELECT * FROM test WHERE (B + 20) = 30");
+		whereClause = parser.getWhereClause();
+		assertEquals("Incorrect WHERE", "= + [B] 20 30", whereClause.toString());
     }
 
     /**
