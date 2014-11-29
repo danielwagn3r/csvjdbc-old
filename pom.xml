@@ -5,7 +5,7 @@
 
     <groupId>net.sourceforge.csvjdbc</groupId>
     <artifactId>csvjdbc</artifactId>
-    <version>1.0.21.3</version>
+    <version>1.0.21.4</version>
     <packaging>jar</packaging>
 
     <name>CsvJdbc</name>
