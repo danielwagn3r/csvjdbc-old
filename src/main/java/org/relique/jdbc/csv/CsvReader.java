@@ -34,6 +34,7 @@ public class CsvReader extends DataReader
 	private String[] columnNames;
 	private String[] aliasedColumnNames;
 	private String[] columnTypes;
+	private String[] upperColumnNames;
 	private Vector<String[]> firstTable;
 	private int joiningValueNo;
 	private int valuesToJoin;
@@ -153,6 +154,17 @@ public class CsvReader extends DataReader
 			return columnNames;
 	}
 
+	private String[] getUpperColumnNames()
+	{
+		if (upperColumnNames == null)
+		{
+			upperColumnNames = getColumnNames();
+			for (int i = 0; i < upperColumnNames.length; i++)
+				upperColumnNames[i] = upperColumnNames[i].toUpperCase();
+		}
+		return upperColumnNames;
+	}
+
 	private String[] getAliasedColumnNames()
 	{
 		if (this.aliasedColumnNames == null)
@@ -164,12 +176,11 @@ public class CsvReader extends DataReader
 				 * Create array of "T.ID" column aliases that we can use for
 				 * every row.
 				 */
-				String[] columnNames = getColumnNames();
-				this.aliasedColumnNames = new String[columnNames.length];
-				for (int i = 0; i < columnNames.length; i++)
+				String[] upperColumnNames = getUpperColumnNames();
+				this.aliasedColumnNames = new String[upperColumnNames.length];
+				for (int i = 0; i < upperColumnNames.length; i++)
 				{
-					this.aliasedColumnNames[i] = tableAlias + "." +
-						columnNames[i].toUpperCase();
+					this.aliasedColumnNames[i] = tableAlias + "." + upperColumnNames[i];
 				}
 			}
 		}
@@ -203,7 +214,7 @@ public class CsvReader extends DataReader
 		}
 		if (columnTypes == null)
 			getColumnTypes();
-		String[] columnNames = getColumnNames();
+		String[] columnNames = getUpperColumnNames();
 		String[] columnAliases = getAliasedColumnNames();
 
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -211,7 +222,7 @@ public class CsvReader extends DataReader
 
 		for (int i = 0; i < columnNames.length; i++)
 		{
-			String key = columnNames[i].toUpperCase();
+			String key = columnNames[i];
 			Object value = converter.convert(columnTypes[i], fieldValues[i]);
 			result.put(key, value);
 			if (columnAliases != null)

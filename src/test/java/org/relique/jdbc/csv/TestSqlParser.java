@@ -895,6 +895,38 @@ public class TestSqlParser
     }
 
     @Test
+	public void testParsingCComments() throws ParseException, SQLException
+	{
+		SqlParser parser1 = new SqlParser();
+		parser1.parse("/*\n" +
+			" * A multi-line comment !\n" +
+			" */\n" +
+			"SELECT Name /* comment */, 'abc/*def' S\n" +
+			"FROM sample\n" +
+			"/* another comment */");
+		assertEquals("sample", parser1.getTableName());
+		String[] cols = parser1.getColumnNames();
+		assertTrue("Incorrect Column Count", cols.length == 2);
+		assertTrue("Column Name Col 0 '" + cols[0] + "' is not NAME",
+			cols[0].equalsIgnoreCase("NAME"));
+		assertTrue("Column Name Col 1 '" + cols[1] + "' is not S",
+			cols[1].equalsIgnoreCase("S"));
+
+		try
+		{
+			SqlParser parser2 = new SqlParser();
+			parser2.parse("SELECT /* nested /* comment */ not allowed */ Name FROM sample");
+			fail("Should raise a ParseException");
+		}
+		catch (SQLException e)
+		{
+		}
+		catch (ParseException e)
+		{
+		}
+	}
+
+	@Test
     public void testParsingMultipleStatements() throws ParseException, SQLException
     {
         MultipleSqlParser parser = new MultipleSqlParser();
