@@ -50,9 +50,11 @@ public class DbfReader extends DataReader
 	private Method fieldGetTypeMethod;
 	private Method fieldGetLengthMethod;
 	private Map<String, String> dbfTypeToSQLType;
+	private String upperTableName;
 	private String tableAlias;
+	private String[] columnNames = null;
 
-	public DbfReader(String path, String tableAlias, String charset) throws SQLException
+	public DbfReader(String path, String tableName, String tableAlias, String charset) throws SQLException
 	{
 		super();
 		try
@@ -99,6 +101,7 @@ public class DbfReader extends DataReader
 			recordCount = (Integer)tableGetRecordCountMethod.invoke(table, new Object[] {});
 			record = null;
 			rowNo = -1;
+			this.upperTableName = tableName.toUpperCase();
 			this.tableAlias = tableAlias;
 		}
 		catch (Exception e)
@@ -132,29 +135,33 @@ public class DbfReader extends DataReader
 
 	public String[] getColumnNames() throws SQLException
 	{
-		int columnCount = fields.size();
-		String[] result = new String[columnCount];
-		for(int i=0; i < columnCount; i++)
+		if (columnNames == null)
 		{
-			Object field = fields.get(i);
-			try
+			int columnCount = fields.size();
+			String[] result = new String[columnCount];
+			for(int i=0; i < columnCount; i++)
 			{
-				result[i] = (String) fieldGetNameMethod.invoke(field, new Object[] {});
+				Object field = fields.get(i);
+				try
+				{
+					result[i] = (String) fieldGetNameMethod.invoke(field, new Object[] {});
+				}
+				catch (Exception e)
+				{
+					throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
+				}
 			}
-			catch (Exception e)
-			{
-				throw new SQLException(CsvResources.getString("dansDbfError") + ": " + e);
-			}
+			columnNames = result;
 		}
-		return result;
+		return columnNames;
 	}
 
-	public Object getField(int i) throws SQLException
+	private Object getField(int i) throws SQLException
 	{
-		Object field = fields.get(i - 1);
 		try
 		{
-			String fieldName = (String) fieldGetNameMethod.invoke(field, new Object[] {});
+			String []fieldNames = getColumnNames();
+			String fieldName = fieldNames[i];
 			Object result = recordGetTypedValueMethod.invoke(record, new Object[] {fieldName});
 			if(result instanceof String)
 				result = ((String) result).trim();
@@ -241,7 +248,7 @@ public class DbfReader extends DataReader
 			try
 			{
 				String fieldName = (String) fieldGetNameMethod.invoke(field, new Object[] {});
-				Object o = getField(i + 1);
+				Object o = getField(i);
 
 				/*
 				 * Convert column names to upper case because
@@ -249,6 +256,7 @@ public class DbfReader extends DataReader
 				 */
 				fieldName = fieldName.toUpperCase();
 				result.put(fieldName, o);
+				result.put(upperTableName + "." + fieldName, o);
 				if (tableAlias != null)
 				{
 					/*

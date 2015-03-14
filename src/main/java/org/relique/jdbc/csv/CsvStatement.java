@@ -56,6 +56,7 @@ public class CsvStatement implements Statement
 	protected List<SqlParser> multipleParsers = null;
 	private int maxRows = 0;
 	private int fetchSize = 1;
+	private int queryTimeout = Integer.MAX_VALUE;
 	private int fetchDirection = ResultSet.FETCH_FORWARD;
 	private boolean closed;
 
@@ -110,7 +111,7 @@ public class CsvStatement implements Statement
 	@Override
 	public void setQueryTimeout(int seconds) throws SQLException
 	{
-		throw new SQLException(CsvResources.getString("methodNotSupported") + ": setQueryTimeout(int)");
+		queryTimeout = seconds;
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public class CsvStatement implements Statement
 	{
 		checkOpen();
 
-		return 0;
+		return queryTimeout;
 	}
 
 	@Override
@@ -351,7 +352,7 @@ public class CsvStatement implements Statement
 			{
 				if (connection.getExtension().equalsIgnoreCase(".dbf"))
 				{
-					reader = new DbfReader(fileName, parser.getTableAlias(), connection.getCharset());
+					reader = new DbfReader(fileName, tableName, parser.getTableAlias(), connection.getCharset());
 				}
 				else
 				{
@@ -362,18 +363,19 @@ public class CsvStatement implements Statement
 						CryptoFilter filter = connection.getDecryptingCodec();
 						if (connection.isIndexedFiles())
 						{
-							String fileNamePattern = parser.getTableName()
-									+ connection.getFileNamePattern()
-									+ connection.getExtension();
+							String fileNamePattern = parser.getTableName() +
+								connection.getFileNamePattern() +
+								connection.getExtension();
 							String[] nameParts = connection.getNameParts();
 							String dirName = connection.getPath();
 							in = new FileSetInputStream(dirName,
-									fileNamePattern, nameParts,
-									connection.getSeparator(),
-									connection.isFileTailPrepend(),
-									connection.isSuppressHeaders(), filter,
-									connection.getSkipLeadingDataLines()
-											+ connection.getTransposedLines());
+								fileNamePattern,
+								nameParts,
+								connection.getSeparator(),
+								connection.isFileTailPrepend(),
+								connection.isSuppressHeaders(),
+								filter,
+								connection.getSkipLeadingDataLines() + connection.getTransposedLines());
 						}
 						else if (filter == null)
 						{
@@ -403,22 +405,26 @@ public class CsvStatement implements Statement
 
 					String headerline = connection.getHeaderline(tableName);
 					CsvRawReader rawReader = new CsvRawReader(input,
-							parser.getTableAlias(), connection.getSeparator(),
-							connection.isSuppressHeaders(),
-							connection.isHeaderFixedWidth(),
-							connection.getQuotechar(),
-							connection.getCommentChar(), headerline,
-							connection.getTrimHeaders(),
-							connection.getTrimValues(),
-							connection.getSkipLeadingLines(),
-							connection.isIgnoreUnparseableLines(),
-							connection.isDefectiveHeaders(),
-							connection.getSkipLeadingDataLines(),
-							connection.getQuoteStyle(),
-							connection.getFixedWidthColumns());
+						tableName,
+						parser.getTableAlias(),
+						connection.getSeparator(),
+						connection.isSuppressHeaders(),
+						connection.isHeaderFixedWidth(),
+						connection.getQuotechar(),
+						connection.getCommentChar(),
+						headerline,
+						connection.getTrimHeaders(),
+						connection.getTrimValues(),
+						connection.getSkipLeadingLines(),
+						connection.isIgnoreUnparseableLines(),
+						connection.isDefectiveHeaders(),
+						connection.getSkipLeadingDataLines(),
+						connection.getQuoteStyle(),
+						connection.getFixedWidthColumns());
 					reader = new CsvReader(rawReader,
-							connection.getTransposedLines(),
-							connection.getTransposedFieldsToSkip(), headerline);
+						connection.getTransposedLines(),
+						connection.getTransposedFieldsToSkip(),
+						headerline);
 				}
 			}
 			catch (IOException e)
@@ -439,13 +445,20 @@ public class CsvStatement implements Statement
 		CsvResultSet resultSet = null;
 		try
 		{
-			resultSet = new CsvResultSet(this, reader, tableName,
-					parser.getColumns(), parser.isDistinct(), this.resultSetType,
-					parser.getWhereClause(), parser.getGroupByColumns(),
-					parser.getHavingClause(), parser.getOrderByColumns(),
-					parser.getLimit(), parser.getOffset(),
-					connection.getColumnTypes(tableName),
-					connection.getSkipLeadingLines());
+			resultSet = new CsvResultSet(this,
+				reader,
+				tableName,
+				parser.getColumns(),
+				parser.isDistinct(),
+				this.resultSetType,
+				parser.getWhereClause(),
+				parser.getGroupByColumns(),
+				parser.getHavingClause(),
+				parser.getOrderByColumns(),
+				parser.getLimit(),
+				parser.getOffset(),
+				connection.getColumnTypes(tableName),
+				connection.getSkipLeadingLines());
 			lastResultSet = resultSet;
 		}
 		catch (ClassNotFoundException e)

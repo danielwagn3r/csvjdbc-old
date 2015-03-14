@@ -20,8 +20,6 @@ package org.relique.jdbc.csv;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
@@ -29,8 +27,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -504,84 +502,23 @@ public class StringConverter
 	{
 		private static final long serialVersionUID = -3037117163532338893L;
 		{
-			try
-			{
-				/*
-				 * Lookup from SQL type names to java class.
-				 */
-				put("string", Class.forName("java.lang.String"));
-				put("boolean", Class.forName("java.lang.Boolean"));
-				put("byte", Class.forName("java.lang.Byte"));
-				put("short", Class.forName("java.lang.Short"));
-				put("int", Class.forName("java.lang.Integer"));
-				put("integer", Class.forName("java.lang.Integer"));
-				put("long", Class.forName("java.lang.Long"));
-				put("float", Class.forName("java.lang.Float"));
-				put("double", Class.forName("java.lang.Double"));
-				put("bigdecimal", Class.forName("java.math.BigDecimal"));
-				put("date", Class.forName("java.sql.Date"));
-				put("time", Class.forName("java.sql.Time"));
-				put("timestamp", Class.forName("java.sql.Timestamp"));
-				put("asciistream", Class.forName("java.io.InputStream"));
-			}
-			catch (ClassNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	};
-
-	static private Map<String, Method> converterMethodForClass = new HashMap<String, Method>()
-	{
-		private static final long serialVersionUID = -3037117163532338893L;
-		Class<?>[] argTypes = new Class[1];
-		Class<?> containerClass = null;
-		{
-			try
-			{
-				argTypes[0] = Class.forName("java.lang.String");
-				containerClass = Class.forName("org.relique.jdbc.csv.StringConverter");
-				put("string", containerClass.getMethod("parseString", argTypes));
-				put("boolean", containerClass.getMethod("parseBoolean", argTypes));
-				put("byte", containerClass.getMethod("parseByte", argTypes));
-				put("short", containerClass.getMethod("parseShort", argTypes));
-				put("int", containerClass.getMethod("parseInt", argTypes));
-				put("integer", containerClass.getMethod("parseInt", argTypes));
-				put("long", containerClass.getMethod("parseLong", argTypes));
-				put("float", containerClass.getMethod("parseFloat", argTypes));
-				put("double", containerClass.getMethod("parseDouble", argTypes));
-				put("bigdecimal", containerClass.getMethod("parseBigDecimal", argTypes));
-				put("date", containerClass.getMethod("parseDate", argTypes));
-				put("time", containerClass.getMethod("parseTime", argTypes));
-				put("timestamp", containerClass.getMethod("parseTimestamp", argTypes));
-				put("asciiStream", containerClass.getMethod("parseAsciiStream", argTypes));
-				/*
-				 * sooner or later, maybe... put("UnicodeStream",
-				 * containerClass.getMethod("parseUnicodeStream", argTypes));
-				 * put("BinaryStream",
-				 * containerClass.getMethod("parseBinaryStream", argTypes));
-				 * put("Blob", containerClass.getMethod("parseBlob", argTypes));
-				 * put("Clob", containerClass.getMethod("parseClob", argTypes));
-				 * put("Array", containerClass.getMethod("parseArray",
-				 * argTypes)); put("URL", containerClass.getMethod("parseURL",
-				 * argTypes)); put("NCharacterStream",
-				 * containerClass.getMethod("parseNCharacterStream", argTypes));
-				 * put("NClob", containerClass.getMethod("parseNClob",
-				 * argTypes)); put("NString",
-				 * containerClass.getMethod("parseNString", argTypes));
-				 * put("RowId", containerClass.getMethod("parseRowId",
-				 * argTypes)); put("SQLXML",
-				 * containerClass.getMethod("parseSQLXML", argTypes));
-				 */
-			}
-			catch (ClassNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch (NoSuchMethodException e)
-			{
-				e.printStackTrace();
-			}
+			/*
+			 * Lookup from SQL type names to java class.
+			 */
+			put("string", java.lang.String.class);
+			put("boolean", java.lang.Boolean.class);
+			put("byte", java.lang.Byte.class);
+			put("short", java.lang.Short.class);
+			put("int", java.lang.Integer.class);
+			put("integer", java.lang.Integer.class);
+			put("long", java.lang.Long.class);
+			put("float", java.lang.Float.class);
+			put("double", java.lang.Double.class);
+			put("bigdecimal", java.math.BigDecimal.class);
+			put("date", java.sql.Date.class);
+			put("time", java.sql.Time.class);
+			put("timestamp", java.sql.Timestamp.class);
+			put("asciistream", java.io.InputStream.class);
 		}
 	};
 
@@ -590,30 +527,36 @@ public class StringConverter
 		/*
 		 * No need to do a conversion if desired type is also a string.
 		 */
-		if (sqlTypeName.equalsIgnoreCase("string"))
+		if (sqlTypeName == null)
 			return stringRepresentation;
-
-		Object value = stringRepresentation;
-		if (sqlTypeName != null)
-		{
-			Object[] args = new Object[1];
-			args[0] = stringRepresentation;
-			try
-			{
-				sqlTypeName = sqlTypeName.toLowerCase();
-				value = converterMethodForClass.get(sqlTypeName).invoke(this, args);
-			}
-			catch (IllegalArgumentException e)
-			{
-			}
-			catch (IllegalAccessException e)
-			{
-			}
-			catch (InvocationTargetException e)
-			{
-			}
-		}
-		return value;
+		else if (sqlTypeName.equalsIgnoreCase("string"))
+			return stringRepresentation;
+		else if (sqlTypeName.equalsIgnoreCase("boolean"))
+			return parseBoolean(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("byte"))
+			return parseByte(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("short"))
+			return parseShort(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("int") || sqlTypeName.equalsIgnoreCase("integer"))
+			return parseInt(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("long"))
+			return parseLong(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("float"))
+			return parseFloat(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("double"))
+			return parseDouble(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("bigdecimal"))
+			return parseBigDecimal(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("date"))
+			return parseDate(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("time"))
+			return parseTime(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("timestamp"))
+			return parseTimestamp(stringRepresentation);
+		else if (sqlTypeName.equalsIgnoreCase("asciistream"))
+			return parseAsciiStream(stringRepresentation);
+		else
+			return stringRepresentation;
 	}
 
 	public Class<?> forSQLName(String sqlTypeName)

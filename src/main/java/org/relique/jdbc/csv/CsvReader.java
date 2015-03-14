@@ -32,6 +32,7 @@ public class CsvReader extends DataReader
 	private int transposedLines;
 	private int transposedFieldsToSkip;
 	private String[] columnNames;
+	private String[] tableAndColumnNames;
 	private String[] aliasedColumnNames;
 	private String[] columnTypes;
 	private String[] upperColumnNames;
@@ -75,8 +76,7 @@ public class CsvReader extends DataReader
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
-				throw new SQLException("" + e);
+				throw new SQLException(e.toString());
 			}
 		}
 	}
@@ -120,7 +120,7 @@ public class CsvReader extends DataReader
 				}
 				catch (IOException e)
 				{
-					throw new SQLException("" + e);
+					throw new SQLException(e.toString());
 				}
 				if (line == null)
 					return false;
@@ -165,6 +165,26 @@ public class CsvReader extends DataReader
 		return upperColumnNames;
 	}
 
+	private String[] getTableAndColumnNames()
+	{
+		if (this.tableAndColumnNames == null)
+		{
+			String upperTableName = rawReader.getTableName().toUpperCase();
+
+			/*
+			 * Create array of "tablename.columnname" column aliases that we can use for
+			 * every row.
+			 */
+			String[] upperColumnNames = getUpperColumnNames();
+			this.tableAndColumnNames = new String[upperColumnNames.length];
+			for (int i = 0; i < upperColumnNames.length; i++)
+			{
+				this.tableAndColumnNames[i] = upperTableName + "." + upperColumnNames[i];
+			}
+		}
+		return this.tableAndColumnNames;
+	}
+
 	private String[] getAliasedColumnNames()
 	{
 		if (this.aliasedColumnNames == null)
@@ -187,8 +207,7 @@ public class CsvReader extends DataReader
 		return this.aliasedColumnNames;
 	}
 
-	@Override
-	public Object getField(int i) throws SQLException
+	private Object getField(int i) throws SQLException
 	{
 		if (isPlainReader())
 			return rawReader.getField(i);
@@ -215,6 +234,7 @@ public class CsvReader extends DataReader
 		if (columnTypes == null)
 			getColumnTypes();
 		String[] columnNames = getUpperColumnNames();
+		String[] tableAndColumnNames = getTableAndColumnNames();
 		String[] columnAliases = getAliasedColumnNames();
 
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -225,6 +245,7 @@ public class CsvReader extends DataReader
 			String key = columnNames[i];
 			Object value = converter.convert(columnTypes[i], fieldValues[i]);
 			result.put(key, value);
+			result.put(tableAndColumnNames[i], value);
 			if (columnAliases != null)
 			{
 				/*
@@ -233,7 +254,6 @@ public class CsvReader extends DataReader
 				 */
 				result.put(columnAliases[i], value);
 			}
-
 		}
 		return result;
 	}

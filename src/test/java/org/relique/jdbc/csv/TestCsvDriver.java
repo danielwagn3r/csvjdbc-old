@@ -3133,6 +3133,33 @@ public class TestCsvDriver
 	}
 
 	@Test
+	public void testNoQuotechar() throws SQLException
+	{
+		Properties props = new Properties();
+		props.put("quotechar", "");
+		props.put("fileExtension", ".txt");
+
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath, props);
+
+		Statement stmt = conn.createStatement();
+
+		ResultSet results = stmt.executeQuery("SELECT * FROM uses_quotes");
+		assertTrue(results.next());
+		assertEquals("COLUMN1 is wrong", "1", results.getString(1));
+		assertEquals("COLUMN2 is wrong", "uno", results.getString(2));
+		assertEquals("COLUMN3 is wrong", "one", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("COLUMN1 is wrong", "2", results.getString(1));
+		assertEquals("COLUMN2 is wrong", "a 'quote' (source unknown)", results.getString(2));
+		assertEquals("COLUMN3 is wrong", "two", results.getString(3));
+		assertTrue(results.next());
+		assertEquals("COLUMN1 is wrong", "3", results.getString(1));
+		assertEquals("COLUMN2 is wrong", "another \"quote\" (also unkown)", results.getString(2));
+		assertEquals("COLUMN3 is wrong", "three", results.getString(3));
+	}
+
+	@Test
 	public void testLongSeparator() throws SQLException
 	{
 		Properties props = new Properties();
@@ -3239,9 +3266,11 @@ public class TestCsvDriver
 	{
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
 				+ filePath);
+		assertTrue(conn.isValid(0));
 		assertFalse(conn.isClosed());
 		conn.close();
 		assertTrue(conn.isClosed());
+		assertFalse(conn.isValid(0));
 
 		/*
 		 * Second close is ignored.
@@ -3934,6 +3963,20 @@ public class TestCsvDriver
 	}
 
 	@Test
+	public void testTableNameAsAlias() throws SQLException
+	{
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath);
+
+		Statement stmt = conn.createStatement();
+
+		ResultSet results = stmt.executeQuery("SELECT sample.id FROM sample");
+
+		results.next();
+		assertEquals("Incorrect ID Value", "Q123", results.getString("ID"));
+	}
+
+	@Test
 	public void testTableAlias() throws SQLException
 	{
 		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
@@ -4275,6 +4318,29 @@ public class TestCsvDriver
 		Statement stmt = conn.createStatement();
 
 		ResultSet results = stmt.executeQuery("select distinct job from sample5");
+
+		assertTrue(results.next());
+		assertEquals("Incorrect distinct value 1", "Piloto", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("Incorrect distinct value 2", "Project Manager", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("Incorrect distinct value 3", "Finance Manager", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("Incorrect distinct value 4", "Office Manager", results.getString(1));
+		assertTrue(results.next());
+		assertEquals("Incorrect distinct value 5", "Office Employee", results.getString(1));
+		assertFalse(results.next());
+	}
+
+	@Test
+	public void testDistinctWithAlias() throws SQLException
+	{
+		Connection conn = DriverManager.getConnection("jdbc:relique:csv:"
+				+ filePath);
+
+		Statement stmt = conn.createStatement();
+
+		ResultSet results = stmt.executeQuery("select distinct S.job from sample5 S");
 
 		assertTrue(results.next());
 		assertEquals("Incorrect distinct value 1", "Piloto", results.getString(1));

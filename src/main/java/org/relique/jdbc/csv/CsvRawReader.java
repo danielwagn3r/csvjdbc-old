@@ -18,10 +18,8 @@
  */
 package org.relique.jdbc.csv;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +46,7 @@ import org.relique.io.DataReader;
 public class CsvRawReader
 {
 	private LineNumberReader input;
+	private String tableName;
 	private String tableAlias;
 	private String[] columnNames;
 	private String[] fieldValues;
@@ -56,44 +55,32 @@ public class CsvRawReader
 	private String headerLine = "";
 	private boolean suppressHeaders = false;
 	private boolean isHeaderFixedWidth = true;
-	private char quoteChar = '"';
+	private Character quoteChar = Character.valueOf('"');
 	private boolean trimValues = true;
 	private String comment = null;
 	private boolean ignoreUnparseableLines;
 	private QuoteStyle quoteStyle;
 	private ArrayList<int []> fixedWidthColumns;
 
-	/**
-	 * Insert the method's description here.
-	 *
-	 * Creation date: (6-11-2001 15:02:42)
-	 *
-	 * @param fileName
-	 *			  java.lang.String
-	 * @param separator
-	 *			  char
-	 * @param suppressHeaders
-	 *			  boolean
-	 * @param quoteChar
-	 *			  char
-	 * @param defectiveHeaders
-	 * @param skipLeadingDataLines
-	 * @exception java.lang.Exception
-	 *				  The exception description.
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws UnsupportedEncodingException
-	 * @since
-	 */
-	public CsvRawReader(LineNumberReader in, String tableAlias, String separator,
-			boolean suppressHeaders, boolean isHeaderFixedWidth, char quoteChar, String comment,
-			String headerLine, boolean trimHeaders, boolean trimValues,
-			int skipLeadingLines, boolean ignoreUnparseableLines,
-			boolean defectiveHeaders, int skipLeadingDataLines, QuoteStyle quoteStyle,
-			ArrayList<int []> fixedWidthColumns)
-			throws IOException, SQLException
+	public CsvRawReader(LineNumberReader in,
+		String tableName,
+		String tableAlias,
+		String separator,
+		boolean suppressHeaders,
+		boolean isHeaderFixedWidth,
+		Character quoteChar,
+		String comment,
+		String headerLine,
+		boolean trimHeaders,
+		boolean trimValues,
+		int skipLeadingLines,
+		boolean ignoreUnparseableLines,
+		boolean defectiveHeaders,
+		int skipLeadingDataLines,
+		QuoteStyle quoteStyle,
+		ArrayList<int []> fixedWidthColumns) throws IOException, SQLException
 	{
+		this.tableName = tableName;
 		this.tableAlias = tableAlias;
 		this.separator = separator;
 		this.suppressHeaders = suppressHeaders;
@@ -163,14 +150,6 @@ public class CsvRawReader
 		}
 	}
 
-	/**
-	 *Description of the Method
-	 *
-	 * @return Description of the Returned Value
-	 * @exception SQLException
-	 *				  Description of Exception
-	 * @since
-	 */
 	public boolean next() throws SQLException
 	{
 		fieldValues = new String[columnNames.length];
@@ -203,11 +182,6 @@ public class CsvRawReader
 		return true;
 	}
 
-	/**
-	 *Description of the Method
-	 *
-	 * @since
-	 */
 	public void close()
 	{
 		try
@@ -299,6 +273,11 @@ public class CsvRawReader
 		return retval;
 	}
 
+	public String getTableName()
+	{
+		return tableName;
+	}
+
 	public String getTableAlias()
 	{
 		return tableAlias;
@@ -387,6 +366,11 @@ public class CsvRawReader
 			return s.substring(0, len);
 	}
 
+	private boolean isQuoteChar(char c)
+	{
+		return quoteChar != null && c == quoteChar.charValue();
+	}
+
 	/**
 	 * splits <b>line</b> into the String[] it contains.
 	 * Stuart Mottram added the code for handling line breaks in fields.
@@ -415,7 +399,7 @@ public class CsvRawReader
 			while (currentPos < line.length())
 			{
 				char currentChar = line.charAt(currentPos);
-				if (value.length() == 0 && currentChar == quoteChar
+				if (value.length() == 0 && isQuoteChar(currentChar)
 						&& !inQuotedString && quoteStyle != QuoteStyle.NONE)
 				{
 					// acknowledge quoteChar only at beginning of value.
@@ -429,18 +413,18 @@ public class CsvRawReader
 					value.append(nextChar);
 					currentPos++;
 				}
-				else if (currentChar == quoteChar && quoteStyle != QuoteStyle.NONE)
+				else if (isQuoteChar(currentChar) && quoteStyle != QuoteStyle.NONE)
 				{
 					char nextChar = line.charAt(currentPos + 1);
 					if (!inQuotedString)
 					{
 						// accepting the single quoteChar because the whole
 						// value is not quoted.
-						value.append(quoteChar);
+						value.append(quoteChar.charValue());
 					}
-					else if (nextChar == quoteChar)
+					else if (isQuoteChar(nextChar))
 					{
-						value.append(quoteChar);
+						value.append(quoteChar.charValue());
 						if (quoteStyle == QuoteStyle.SQL)
 						{
 							// doubled quoteChar in quoted strings collapse to

@@ -781,6 +781,83 @@ public class TestSqlParser
     }
 
     @Test
+	public void testEvaluateCaseExpressions() throws ParseException, SQLException
+	{
+		/*
+		 * Test "searched case" expressions.
+		 */
+		ExpressionParser cs; 
+		cs = new ExpressionParser(new StringReader("CASE " +
+			"WHEN POSTCODE >= 2600 AND POSTCODE <= 2618 THEN 'ACT' " +
+			"WHEN POSTCODE >= 2000 AND POSTCODE <= 2999 THEN 'NSW' " +
+			"WHEN POSTCODE >= 3000 AND POSTCODE <= 3999 THEN 'VIC' " +
+			"ELSE '' END"));
+		cs.parseQueryEnvEntry();
+		Map<String, Object> env = new HashMap<String, Object>();
+
+		env.put("POSTCODE", Integer.valueOf(2601));
+		Object o = cs.eval(env);
+		assertEquals(o.toString(), "ACT");
+
+		env.put("POSTCODE", Integer.valueOf(2795));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "NSW");
+
+		env.put("POSTCODE", Integer.valueOf(3001));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "VIC");
+
+		env.put("POSTCODE", Integer.valueOf(6000));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "");
+
+		cs = new ExpressionParser(new StringReader("CASE WHEN F=1 THEN '1st' WHEN F=2 THEN '2nd' END"));
+		cs.parseQueryEnvEntry();
+
+		env.put("F", Integer.valueOf(1));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "1st");
+
+		env.put("F", Integer.valueOf(2));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "2nd");
+
+		env.put("F", Integer.valueOf(3));
+		o = cs.eval(env);
+		assertEquals(o, null);
+
+		/*
+		 * Test "simple case" expressions.
+		 */
+		cs = new ExpressionParser(new StringReader("CASE UNITS WHEN 'KM' THEN X * 1000 ELSE X END"));
+		cs.parseQueryEnvEntry();
+
+		env.put("UNITS", "KM");
+		env.put("X", Integer.valueOf(3));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "3000");
+
+		env.put("UNITS", "M");
+		o = cs.eval(env);
+		assertEquals(o.toString(), "3");
+
+		cs = new ExpressionParser(new StringReader("CASE F WHEN 1 THEN '1st' WHEN 2 THEN '2nd' END"));
+		cs.parseQueryEnvEntry();
+
+		env.put("F", Integer.valueOf(1));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "1st");
+
+		env.put("F", Integer.valueOf(2));
+		o = cs.eval(env);
+		assertEquals(o.toString(), "2nd");
+
+		env.put("F", Integer.valueOf(3));
+		o = cs.eval(env);
+		assertEquals(o, null);
+	}
+
+	@Test
     public void testParsingIgnoresCase() throws ParseException, SQLException
     {
         SqlParser parser = new SqlParser();
